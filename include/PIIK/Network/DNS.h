@@ -4,7 +4,7 @@
 
 #include <vector>
 
-namespace Infra
+namespace Piik
 {
     class DNS
     {

@@ -6,7 +6,7 @@
 #include "PIIK/Utility/String.h"
 #include "PIIK/Utility/File.h"
 
-namespace Infra
+namespace Piik
 {
     std::optional<std::vector<char>> File::LoadBinary(const std::string& filePath)
     {

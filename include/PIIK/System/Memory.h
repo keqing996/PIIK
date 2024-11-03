@@ -2,7 +2,7 @@
 
 #include <cstddef>
 
-namespace Infra
+namespace Piik
 {
     class Memory
     {

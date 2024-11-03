@@ -1,6 +1,6 @@
 #include "PIIK/Utility/CommandLine.h"
 
-namespace Infra
+namespace Piik
 {
     static std::optional<std::string> GetFullName(const std::string& input)
     {

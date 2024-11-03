@@ -4,7 +4,7 @@
 
 #if PLATFORM_WINDOWS
 
-namespace Infra
+namespace Piik
 {
     class Console
     {

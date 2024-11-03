@@ -3,7 +3,7 @@
 
 static std::mutex gMutex = {};
 
-namespace Infra
+namespace Piik
 {
     void Logger::SetFilterLevel(Level targetLevel)
     {

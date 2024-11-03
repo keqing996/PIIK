@@ -3,7 +3,7 @@
 #include "Windows/WindowsSocket.h"
 #include "Posix/PosixSocket.h"
 
-namespace Infra
+namespace Piik
 {
     Socket::Socket(IpAddress::Family af, void* handle)
         : _addressFamily(af)

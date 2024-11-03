@@ -12,7 +12,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-namespace Infra
+namespace Piik
 {
     using SocketHandle = int;
 

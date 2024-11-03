@@ -6,7 +6,7 @@
 #include <string>
 #include <android/log.h>
 
-namespace Infra
+namespace Piik
 {
     Android::LogFunc Android::GetLogFunction()
     {

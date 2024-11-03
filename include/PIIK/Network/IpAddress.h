@@ -5,7 +5,7 @@
 #include <cstdint>
 #include <optional>
 
-namespace Infra
+namespace Piik
 {
     class IpAddress
     {

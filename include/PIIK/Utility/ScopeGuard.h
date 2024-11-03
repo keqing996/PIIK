@@ -3,7 +3,7 @@
 #include <functional>
 #include "NonCopyable.h"
 
-namespace Infra
+namespace Piik
 {
     class ScopeGuard : public NonCopyable
     {

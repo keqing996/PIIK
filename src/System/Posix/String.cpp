@@ -4,7 +4,7 @@
 
 #include "Infra/String.h"
 
-namespace Infra
+namespace Piik
 {
     std::string String::WideStringToString(const std::wstring& wStr)
     {

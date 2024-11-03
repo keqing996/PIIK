@@ -9,7 +9,7 @@
 #include <Psapi.h>
 #undef CreateProcess
 
-namespace Infra
+namespace Piik
 {
     int32_t Process::GetCurrentProcessId()
     {

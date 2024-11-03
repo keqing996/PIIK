@@ -11,7 +11,7 @@
 #undef GetCurrentDirectory
 #undef SetCurrentDirectory
 
-namespace Infra
+namespace Piik
 {
     std::string System::GetMachineName()
     {

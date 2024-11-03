@@ -2,7 +2,7 @@
 
 #include <chrono>
 
-namespace Infra
+namespace Piik
 {
     enum class TimePrecision: int
     {

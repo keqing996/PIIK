@@ -5,7 +5,7 @@
 
 #include <cstring>
 
-namespace Infra
+namespace Piik
 {
     IpAddress IpAddress::V4_ANY (0, 0, 0, 0);
     IpAddress IpAddress::V4_BROADCAST (255, 255, 255, 255);

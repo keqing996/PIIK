@@ -6,7 +6,7 @@
 
 #include "../ThirdParty/stb_image.h"
 
-namespace Infra
+namespace Piik
 {
     Image::Pixel::Pixel()
         : Pixel(0, 0, 0, 0)

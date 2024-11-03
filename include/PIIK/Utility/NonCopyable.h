@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Infra
+namespace Piik
 {
     class NonCopyable
     {

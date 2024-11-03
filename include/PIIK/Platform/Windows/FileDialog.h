@@ -9,7 +9,7 @@
 #include <vector>
 #include <shobjidl.h>
 
-namespace Infra
+namespace Piik
 {
     class Dialog
     {

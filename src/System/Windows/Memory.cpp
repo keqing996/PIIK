@@ -5,7 +5,7 @@
 #include "PIIK/Platform/Windows/WindowsDefine.h"
 #include "PIIK/System/Memory.h"
 
-namespace Infra
+namespace Piik
 {
     void* Memory::VirtualReserve(void* wantedAddr, size_t size)
     {

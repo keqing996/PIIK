@@ -5,7 +5,7 @@
 #include "PIIK/Utility/String.h"
 #include "PIIK/Platform/Windows/WindowsDefine.h"
 
-namespace Infra
+namespace Piik
 {
     std::string String::WideStringToString(const std::wstring& wStr)
     {

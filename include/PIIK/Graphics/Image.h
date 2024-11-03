@@ -4,7 +4,7 @@
 #include <vector>
 #include <string>
 
-namespace Infra
+namespace Piik
 {
     // Y axis zero on top
     class Image

@@ -3,7 +3,7 @@
 #include <string>
 #include <optional>
 
-namespace Infra
+namespace Piik
 {
     struct ProcessHandle
     {

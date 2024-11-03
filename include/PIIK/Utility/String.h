@@ -7,7 +7,7 @@
 #include <algorithm>
 #include <optional>
 
-namespace Infra
+namespace Piik
 {
     class String
     {

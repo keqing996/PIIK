@@ -5,7 +5,7 @@
 #include <iostream>
 #include "PIIK/Platform/Windows/WindowsDefine.h"
 
-namespace Infra
+namespace Piik
 {
     void Console::CreateConsole()
     {

@@ -4,7 +4,7 @@
 
 #pragma comment(lib, "Ws2_32.lib")
 
-namespace Infra::Device
+namespace Piik::Device
 {
     struct WinSocketGuard
     {

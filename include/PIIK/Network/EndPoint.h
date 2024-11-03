@@ -2,7 +2,7 @@
 
 #include "IpAddress.h"
 
-namespace Infra
+namespace Piik
 {
     class EndPoint
     {

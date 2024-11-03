@@ -9,7 +9,7 @@
 #include <optional>
 #include "../Assert.h"
 
-namespace Infra
+namespace Piik
 {
     enum class CmdOptionType
     {

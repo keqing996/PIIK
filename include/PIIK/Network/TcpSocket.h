@@ -2,7 +2,7 @@
 
 #include "Socket.h"
 
-namespace Infra
+namespace Piik
 {
     class TcpSocket: public Socket
     {

@@ -17,7 +17,7 @@
 #include <format>
 #endif
 
-namespace Infra
+namespace Piik
 {
     class Logger
     {

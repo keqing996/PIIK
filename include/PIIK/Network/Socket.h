@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Infra/Network/SocketState.h"
+#include "SocketState.h"
 #include "EndPoint.h"
 
-namespace Infra
+namespace Piik
 {
     class Socket
     {

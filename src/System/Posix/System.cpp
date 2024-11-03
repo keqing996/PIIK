@@ -10,7 +10,7 @@
 
 #include "Infra/System.h"
 
-namespace Infra
+namespace Piik
 {
     std::string System::GetMachineName()
     {

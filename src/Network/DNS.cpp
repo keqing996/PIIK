@@ -3,7 +3,7 @@
 #include "Posix/PosixSocket.h"
 #include "Windows/WindowsSocket.h"
 
-namespace Infra
+namespace Piik
 {
     std::vector<IpAddress> DNS::GetIpAddressByName(const std::string& str)
     {

@@ -10,7 +10,7 @@
 #include <mach/vm_page_size.h>
 #endif
 
-namespace Infra
+namespace Piik
 {
     void* Memory::VirtualReserve(void* wantedAddr, size_t size)
     {

@@ -4,12 +4,12 @@
 
 #if PLATFORM_WINDOWS
 
-#include "Infra/Network/SocketState.h"
-#include "Infra/Platform/Windows/WindowsDefine.h"
+#include "PIIK/Network/SocketState.h"
+#include "PIIK/Platform/Windows/WindowsDefine.h"
 
 #include <ws2tcpip.h>
 
-namespace Infra
+namespace Piik
 {
     using SocketHandle = SOCKET;
 

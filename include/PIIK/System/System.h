@@ -3,7 +3,7 @@
 #include <string>
 #include <cstdint>
 
-namespace Infra
+namespace Piik
 {
     class System
     {

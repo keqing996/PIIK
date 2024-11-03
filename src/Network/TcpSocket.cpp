@@ -4,7 +4,7 @@
 #include "Posix/PosixSocket.h"
 #include "Utility.hpp"
 
-namespace Infra
+namespace Piik
 {
     static SocketState ConnectNoSelect(void* handle, sockaddr* pSockAddr, int structLen)
     {

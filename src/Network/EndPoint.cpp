@@ -1,7 +1,7 @@
 
 #include "PIIK/Network/EndPoint.h"
 
-namespace Infra
+namespace Piik
 {
     const IpAddress& EndPoint::GetIp() const
     {
