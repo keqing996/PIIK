@@ -1,10 +1,10 @@
-#include "Infra/PlatformDefine.h"
+#include "PIIK/PlatformDefine.h"
 
 #if PLATFORM_WINDOWS
 
-#include "Infra/System/System.h"
-#include "Infra/Platform/Windows/WindowsDefine.h"
-#include "Infra/Utility/String.h"
+#include "PIIK/System/System.h"
+#include "PIIK/Platform/Windows/WindowsDefine.h"
+#include "PIIK/Utility/String.h"
 #include <Psapi.h>
 #undef GetEnvironmentVariable
 #undef SetEnvironmentVariable

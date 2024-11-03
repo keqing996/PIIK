@@ -1,8 +1,8 @@
 
 #include <vector>
 #include <iostream>
-#include <Infra/Process.hpp>
-#include <Infra/System.hpp>
+#include <PIIK/Process.hpp>
+#include <PIIK/System.hpp>
 
 int main()
 {

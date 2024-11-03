@@ -1,6 +1,6 @@
 
-#include "Infra/Utility/ScopeGuard.h"
-#include "Infra/Graphics/Image.h"
+#include "PIIK/Utility/ScopeGuard.h"
+#include "PIIK/Graphics/Image.h"
 
 #include <algorithm>
 
