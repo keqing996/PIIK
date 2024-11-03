@@ -28,6 +28,7 @@
 #endif
 
 #ifdef __APPLE__
+#   include <TargetConditionals.h>
 #   ifdef TARGET_OS_IPHONE
 #       define PLATFORM_IOS 1
 #   else
