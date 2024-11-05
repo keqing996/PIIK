@@ -86,10 +86,10 @@
 
 /* Force inline */
 #if COMPILER_CLANG || COMPILER_GCC
-#    define INFRA_FORCE_INLINE inline __attribute__ ((always_inline))
+#    define PIIK_FORCE_INLINE inline __attribute__ ((always_inline))
 #elif COMPILER_MSVC
-#    define INFRA_FORCE_INLINE __forceinline
+#    define PIIK_FORCE_INLINE __forceinline
 #else
-#    define INFRA_FORCE_INLINE inline
+#    define PIIK_FORCE_INLINE inline
 #endif
 

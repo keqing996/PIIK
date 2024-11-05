@@ -18,10 +18,10 @@ namespace Piik
 
     namespace Device
     {
-        INFRA_FORCE_INLINE
+        PIIK_FORCE_INLINE
         SocketHandle ToNativeHandle(void* handle);
 
-        INFRA_FORCE_INLINE
+        PIIK_FORCE_INLINE
         void* ToGeneralHandle(SocketHandle sock);
         
         SocketHandle GetInvalidSocket();
