@@ -8,6 +8,9 @@ namespace Piik
     class SocketUtil
     {
     public:
+        SocketUtil() = delete;
+
+    public:
         static int GetAddressFamily(IpAddress::Family family)
         {
             switch (family)

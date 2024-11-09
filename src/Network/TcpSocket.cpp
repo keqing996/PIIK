@@ -60,16 +60,16 @@ namespace Piik
         switch (_addressFamily)
         {
             case IpAddress::Family::IpV4:
-                address.v4.sin_addr.s_addr = ::htonl(endpoint.GetIp().GetV4Addr());
+                address.v4.sin_addr.s_addr = htonl(endpoint.GetIp().GetV4Addr());
                 address.v4.sin_family = AF_INET;
-                address.v4.sin_port = ::htons(endpoint.GetPort());
+                address.v4.sin_port = htons(endpoint.GetPort());
                 structLen = sizeof(sockaddr_in);
                 break;
             case IpAddress::Family::IpV6:
                 ::memcpy(&address.v6.sin6_addr, endpoint.GetIp().GetV6Addr(), IpAddress::IPV6_ADDR_SIZE_BYTE);
                 address.v6.sin6_family = AF_INET6;
                 address.v6.sin6_scope_id = endpoint.GetV6ScopeId();
-                address.v6.sin6_port = ::htons(endpoint.GetPort());
+                address.v6.sin6_port = htons(endpoint.GetPort());
                 structLen = sizeof(sockaddr_in6);
                 break;
             default:

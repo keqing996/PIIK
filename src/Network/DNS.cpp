@@ -24,7 +24,7 @@ namespace Piik
             if (p->ai_family == AF_INET)
             {
                 sockaddr_in* ipv4 = reinterpret_cast<sockaddr_in*>(p->ai_addr);
-                result.emplace_back(::ntohl((ipv4->sin_addr).s_addr));
+                result.emplace_back(ntohl((ipv4->sin_addr).s_addr));
             }
             else if (p->ai_family == AF_INET6)
             {

@@ -15,7 +15,7 @@ namespace Piik
         : _addrFamily(Family::IpV4)
         , _data()
     {
-        _data.ipV4Data = ::htonl(hostOrderIp);
+        _data.ipV4Data = htonl(hostOrderIp);
     }
 
     IpAddress::IpAddress(uint8_t byte1, uint8_t byte2, uint8_t byte3, uint8_t byte4)
@@ -26,7 +26,7 @@ namespace Piik
         hostOrderIp |= static_cast<uint32_t>(byte2) << 16;
         hostOrderIp |= static_cast<uint32_t>(byte3) << 8;
         hostOrderIp |= static_cast<uint32_t>(byte4);
-        _data.ipV4Data = ::htonl(hostOrderIp);
+        _data.ipV4Data = htonl(hostOrderIp);
     }
 
     IpAddress::IpAddress(const uint8_t* pAddr)
@@ -43,7 +43,7 @@ namespace Piik
 
     uint32_t IpAddress::GetV4Addr() const
     {
-        return ::ntohl(_data.ipV4Data);
+        return ntohl(_data.ipV4Data);
     }
 
     const uint8_t* IpAddress::GetV6Addr() const
