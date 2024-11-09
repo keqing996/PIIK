@@ -1,7 +1,7 @@
 #pragma once
 
 /* Platform define */
-#ifdef _MSC_VER
+#if defined(_MSC_VER) || defined(__MINGW64__) || defined(__MINGW32__)
 #   define PLATFORM_WINDOWS 1
 #else
 #   define PLATFORM_WINDOWS 0
