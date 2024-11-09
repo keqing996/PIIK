@@ -35,11 +35,11 @@ namespace Piik
         Npi() = delete;
 
     public:
-        static INFRA_FORCE_INLINE SocketHandle ToNativeHandle(void* handle);
+        static PIIK_FORCE_INLINE SocketHandle ToNativeHandle(void* handle);
 
-        static INFRA_FORCE_INLINE void* ToGeneralHandle(SocketHandle sock);
+        static PIIK_FORCE_INLINE void* ToGeneralHandle(SocketHandle sock);
 
-        static INFRA_FORCE_INLINE SocketHandle GetInvalidSocket();
+        static PIIK_FORCE_INLINE SocketHandle GetInvalidSocket();
 
         static void CloseSocket(void* handle);
 
