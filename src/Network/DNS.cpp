@@ -1,7 +1,6 @@
 
 #include "PIIK/Network/DNS.h"
-#include "Posix/PosixSocket.h"
-#include "Windows/WindowsSocket.h"
+#include "Platform/PlatformApi.h"
 
 namespace Piik
 {

@@ -1,7 +1,6 @@
 
 #include "PIIK/Network/IpAddress.h"
-#include "Posix/PosixSocket.h"
-#include "Windows/WindowsSocket.h"
+#include "Platform/PlatformApi.h"
 
 #include <cstring>
 

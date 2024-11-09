@@ -8,8 +8,8 @@ namespace Piik
 {
     static SocketState ConnectNoSelect(void* handle, sockaddr* pSockAddr, int structLen)
     {
-        if (::connect(Device::ToNativeHandle(handle), pSockAddr, structLen) == -1)
-            return Device::GetErrorState();
+        if (::connect(Npi::ToNativeHandle(handle), pSockAddr, structLen) == -1)
+            return Npi::GetErrorState();
 
         return SocketState::Success;
     }
@@ -17,7 +17,7 @@ namespace Piik
     static SocketState ConnectWithSelect(const Socket* pSocket, sockaddr* pSockAddr, int structLen, int timeOutInMs)
     {
         // Connect once, if connection is success, no need to select.
-        if (::connect(Device::ToNativeHandle(pSocket->GetNativeHandle()), pSockAddr, structLen) >= 0)
+        if (::connect(Npi::ToNativeHandle(pSocket->GetNativeHandle()), pSockAddr, structLen) >= 0)
             return SocketState::Success;
 
         return Socket::SelectWrite(pSocket, timeOutInMs);
@@ -29,10 +29,10 @@ namespace Piik
         auto [wsaSocketType, wsaProtocol] = SocketUtil::GetTcpProtocol();
 
         const SocketHandle handle = ::socket(addressFamily, wsaSocketType, wsaProtocol);
-        if (handle == Device::GetInvalidSocket())
+        if (handle == Npi::GetInvalidSocket())
             return std::nullopt;
 
-        TcpSocket socket(af, Device::ToGeneralHandle(handle));
+        TcpSocket socket(af, Npi::ToGeneralHandle(handle));
         socket.SetBlocking(true, true);
 
         return socket;
@@ -98,14 +98,14 @@ namespace Piik
 
     std::optional<EndPoint> TcpSocket::GetRemoteEndpoint() const
     {
-        if (Device::ToNativeHandle(_handle) == Device::GetInvalidSocket())
+        if (Npi::ToNativeHandle(_handle) == Npi::GetInvalidSocket())
             return std::nullopt;
 
         if (_addressFamily == IpAddress::Family::IpV4)
         {
             sockaddr_in address{};
-            int structLen = sizeof(sockaddr_in);
-            if (::getpeername(Device::ToNativeHandle(_handle), reinterpret_cast<sockaddr*>(&address), &structLen) != -1)
+            SockLen structLen = sizeof(sockaddr_in);
+            if (::getpeername(Npi::ToNativeHandle(_handle), reinterpret_cast<sockaddr*>(&address), &structLen) != -1)
                 return EndPoint(IpAddress(ntohl(address.sin_addr.s_addr)), ntohs(address.sin_port));
 
             return std::nullopt;
@@ -114,8 +114,8 @@ namespace Piik
         if (_addressFamily == IpAddress::Family::IpV6)
         {
             sockaddr_in6 address{};
-            int structLen = sizeof(sockaddr_in6);
-            if (::getpeername(Device::ToNativeHandle(_handle), reinterpret_cast<sockaddr*>(&address), &structLen) != -1)
+            SockLen structLen = sizeof(sockaddr_in6);
+            if (::getpeername(Npi::ToNativeHandle(_handle), reinterpret_cast<sockaddr*>(&address), &structLen) != -1)
                 return EndPoint(IpAddress(address.sin6_addr.s6_addr), ntohs(address.sin6_port));
 
             return std::nullopt;
@@ -129,9 +129,9 @@ namespace Piik
         if (pData == nullptr || size == 0)
             return { SocketState::Error, 0 };
 
-        int result = ::send(Device::ToNativeHandle(_handle), static_cast<const char*>(pData), size, 0);
+        int result = ::send(Npi::ToNativeHandle(_handle), static_cast<const char*>(pData), size, 0);
         if (result < 0)
-            return { Device::GetErrorState(), 0 };
+            return { Npi::GetErrorState(), 0 };
 
         return { SocketState::Success, result };
     }
@@ -141,12 +141,12 @@ namespace Piik
         if (pBuffer == nullptr || size == 0)
             return { SocketState::Error, 0 };
 
-        int result = ::recv(Device::ToNativeHandle(_handle), static_cast<char*>(pBuffer), size, 0);
+        int result = ::recv(Npi::ToNativeHandle(_handle), static_cast<char*>(pBuffer), size, 0);
         if (result == 0)
             return { SocketState::Disconnect, 0 };
 
         if (result < 0)
-            return { Device::GetErrorState(), 0 };
+            return { Npi::GetErrorState(), 0 };
 
         return { SocketState::Success, result };
     }

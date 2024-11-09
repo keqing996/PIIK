@@ -1,10 +1,10 @@
-#include "WindowsSocket.h"
+#include "PlatformApi.h"
 
 #if PLATFORM_WINDOWS
 
 #pragma comment(lib, "Ws2_32.lib")
 
-namespace Piik::Device
+namespace Piik::Npi
 {
     struct WinSocketGuard
     {

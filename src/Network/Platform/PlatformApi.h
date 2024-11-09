@@ -2,9 +2,18 @@
 
 #include "PIIK/PlatformDefine.h"
 
-#if PLATFORM_SUPPORT_POSIX
+#if PLATFORM_WINDOWS
 
 #include "PIIK/Network/SocketState.h"
+#include "PIIK/Platform/Windows/WindowsDefine.h"
+#include <ws2tcpip.h>
+
+using SocketHandle = SOCKET;
+using SockLen = int;
+
+#endif
+
+#if PLATFORM_POSIX
 
 #include <netdb.h>
 #include <arpa/inet.h>
@@ -12,24 +21,29 @@
 #include <fcntl.h>
 #include <unistd.h>
 
+using SocketHandle = int;
+using SockLen = socklen_t;
+
+#endif
+
 namespace Piik
 {
-    using SocketHandle = int;
-
-    namespace Device
+    // Network platform interface
+    namespace Npi
     {
         INFRA_FORCE_INLINE
         SocketHandle ToNativeHandle(void* handle);
 
         INFRA_FORCE_INLINE
         void* ToGeneralHandle(SocketHandle sock);
-        
+
         SocketHandle GetInvalidSocket();
 
         void CloseSocket(void* handle);
 
         bool SetSocketBlocking(void* handle, bool block);
+
+        SocketState GetErrorState();
     }
 }
 
-#endif

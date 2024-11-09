@@ -1,7 +1,6 @@
 #pragma once
 
-#include "Windows/WindowsSocket.h"
-#include "Posix/PosixSocket.h"
+#include "Platform/PlatformApi.h"
 
 namespace Piik
 {
