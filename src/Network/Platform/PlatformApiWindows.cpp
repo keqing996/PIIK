@@ -4,7 +4,7 @@
 
 #pragma comment(lib, "Ws2_32.lib")
 
-namespace Piik::Npi
+namespace Piik
 {
     struct WinSocketGuard
     {
@@ -22,34 +22,34 @@ namespace Piik::Npi
 
     WinSocketGuard gWinSocketGuard;
 
-    SocketHandle ToNativeHandle(void* handle)
+    SocketHandle Npi::ToNativeHandle(void* handle)
     {
         return reinterpret_cast<SocketHandle>(handle);
     }
 
-    void* ToGeneralHandle(SocketHandle sock)
+    void* Npi::ToGeneralHandle(SocketHandle sock)
     {
         return reinterpret_cast<void*>(sock);
     }
 
-    SocketHandle GetInvalidSocket()
+    SocketHandle Npi::GetInvalidSocket()
     {
         return INVALID_SOCKET;
     }
 
-    void CloseSocket(void* handle)
+    void Npi::CloseSocket(void* handle)
     {
         ::closesocket(ToNativeHandle(handle));
     }
 
-    bool SetSocketBlocking(void* handle, bool block)
+    bool Npi::SetSocketBlocking(void* handle, bool block)
     {
         u_long blocking = block ? 0 : 1;
-        auto ret = ::ioctlsocket(ToNativeHandle(handle), static_cast<long>(FIONBIO), &blocking);
+        auto ret = ::ioctlsocket(ToNativeHandle(handle), FIONBIO, &blocking);
         return ret == 0;
     }
 
-    SocketState GetErrorState()
+    SocketState Npi::GetErrorState()
     {
         switch (::WSAGetLastError())
         {

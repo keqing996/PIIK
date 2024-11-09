@@ -29,21 +29,23 @@ using SockLen = socklen_t;
 namespace Piik
 {
     // Network platform interface
-    namespace Npi
+    class Npi
     {
-        INFRA_FORCE_INLINE
-        SocketHandle ToNativeHandle(void* handle);
+    public:
+        Npi() = delete;
 
-        INFRA_FORCE_INLINE
-        void* ToGeneralHandle(SocketHandle sock);
+    public:
+        static INFRA_FORCE_INLINE SocketHandle ToNativeHandle(void* handle);
 
-        SocketHandle GetInvalidSocket();
+        static INFRA_FORCE_INLINE void* ToGeneralHandle(SocketHandle sock);
 
-        void CloseSocket(void* handle);
+        static INFRA_FORCE_INLINE SocketHandle GetInvalidSocket();
 
-        bool SetSocketBlocking(void* handle, bool block);
+        static void CloseSocket(void* handle);
 
-        SocketState GetErrorState();
-    }
+        static bool SetSocketBlocking(void* handle, bool block);
+
+        static SocketState GetErrorState();
+    };
 }
 
