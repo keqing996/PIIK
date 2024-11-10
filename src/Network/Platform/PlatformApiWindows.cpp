@@ -1,26 +1,30 @@
+#include <memory>
 #include "PlatformApi.h"
 
 #if PLATFORM_WINDOWS
 
-#pragma comment(lib, "Ws2_32.lib")
+struct WinSocketGuard
+{
+    WinSocketGuard()
+    {
+        WSADATA init;
+        ::WSAStartup(MAKEWORD(2, 2), &init);
+    }
+
+    ~WinSocketGuard()
+    {
+        ::WSACleanup();
+    }
+};
+
+std::unique_ptr<WinSocketGuard> pWinSocketGuard = nullptr;
 
 namespace Piik
 {
-    struct WinSocketGuard
+    void Npi::GlobalInit()
     {
-        WinSocketGuard()
-        {
-            WSADATA init;
-            ::WSAStartup(MAKEWORD(2, 2), &init);
-        }
-
-        ~WinSocketGuard()
-        {
-            ::WSACleanup();
-        }
-    };
-
-    WinSocketGuard gWinSocketGuard;
+        pWinSocketGuard = std::make_unique<WinSocketGuard>();
+    }
 
     SocketHandle Npi::GetInvalidSocket()
     {

@@ -47,6 +47,9 @@ namespace Piik
             return reinterpret_cast<void*>(sock);
         }
 
+    public:
+        static void GlobalInit();
+
         static SocketHandle GetInvalidSocket();
 
         static void CloseSocket(void* handle);
