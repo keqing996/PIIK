@@ -22,16 +22,6 @@ namespace Piik
 
     WinSocketGuard gWinSocketGuard;
 
-    SocketHandle Npi::ToNativeHandle(void* handle)
-    {
-        return reinterpret_cast<SocketHandle>(handle);
-    }
-
-    void* Npi::ToGeneralHandle(SocketHandle sock)
-    {
-        return reinterpret_cast<void*>(sock);
-    }
-
     SocketHandle Npi::GetInvalidSocket()
     {
         return INVALID_SOCKET;
