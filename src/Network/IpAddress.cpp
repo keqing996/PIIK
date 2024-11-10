@@ -86,7 +86,7 @@ namespace Piik
     {
         in_addr destinationV4 {};
         if (::inet_pton(AF_INET, str.c_str(), &destinationV4) == 1)
-            return IpAddress(::ntohl(destinationV4.s_addr));
+            return IpAddress(ntohl(destinationV4.s_addr));
 
         in6_addr destinationV6 {};
         if (::inet_pton(AF_INET6, str.c_str(), &destinationV6) == 1)

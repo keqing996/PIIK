@@ -158,7 +158,7 @@ namespace Piik
             std::exit(0);
         }
 
-        if (argc == 2 && (argv[1] == "-h" || argv[1] == "-help" || argv[1] == "-?"))
+        if (argc == 2 && (argv[1] == std::string{ "-h" } || argv[1] == std::string{ "-help" } || argv[1] == std::string{ "-?" }))
         {
             PrintHelpMessage();
             std::exit(0);

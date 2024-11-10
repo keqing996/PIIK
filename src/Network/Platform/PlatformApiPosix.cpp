@@ -4,14 +4,9 @@
 
 namespace Piik
 {
-    SocketHandle Npi::ToNativeHandle(void* handle)
+    void Npi::GlobalInit()
     {
-        return reinterpret_cast<SocketHandle>(handle);
-    }
-
-    void* Npi::ToGeneralHandle(SocketHandle sock)
-    {
-        return reinterpret_cast<void*>(sock);
+        // do nothing
     }
 
     SocketHandle Npi::GetInvalidSocket()
@@ -47,6 +42,7 @@ namespace Piik
     SocketState Npi::GetErrorState()
     {
         // todo
+        return SocketState::Error;
     }
 }
 

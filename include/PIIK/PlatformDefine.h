@@ -57,7 +57,11 @@
 #endif
 
 /* Posix support */
-#define PLATFORM_SUPPORT_POSIX (PLATFORM_LINUX || PLATFORM_ANDROID || PLATFORM_MAC || PLATFORM_IOS)
+#if PLATFORM_LINUX || PLATFORM_ANDROID || PLATFORM_MAC || PLATFORM_IOS
+#    define PLATFORM_SUPPORT_POSIX 1
+#else
+#    define PLATFORM_SUPPORT_POSIX 0
+#endif
 
 /* Cpp version
  * - std::format need gcc13

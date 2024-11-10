@@ -1,10 +1,10 @@
 #pragma once
 
 #include "PIIK/PlatformDefine.h"
+#include "PIIK/Network/SocketState.h"
 
 #if PLATFORM_WINDOWS
 
-#include "PIIK/Network/SocketState.h"
 #include "PIIK/Platform/Windows/WindowsDefine.h"
 #include <ws2tcpip.h>
 
@@ -13,7 +13,7 @@ using SockLen = int;
 
 #endif
 
-#if PLATFORM_POSIX
+#if PLATFORM_SUPPORT_POSIX
 
 #include <netdb.h>
 #include <arpa/inet.h>
@@ -38,7 +38,9 @@ namespace Piik
         PIIK_FORCE_INLINE
         static SocketHandle ToNativeHandle(void* handle)
         {
-            return reinterpret_cast<SocketHandle>(handle);
+            // Macos does not allow void* -> int conversion.
+            // So we have to convert to size_t first.
+            return static_cast<SocketHandle>(reinterpret_cast<size_t>(handle));
         }
 
         PIIK_FORCE_INLINE
