@@ -44,6 +44,8 @@
 #   define PLATFORM_MAC 0
 #endif
 
+#define PLATFORM_APPLE (PLATFORM_IOS | PLATFORM_MAC)
+
 #ifdef __ANDROID__
 #   define PLATFORM_ANDROID 1
 #else
