@@ -23,9 +23,14 @@ namespace Piik
         return Socket::SelectWrite(pSocket, timeOutInMs);
     }
 
-    TcpSocket::TcpSocket(IpAddress::Family af): Socket(af)
+    TcpSocket::TcpSocket(IpAddress::Family af)
+        : Socket(af)
     {
-        auto addressFamily = SocketUtil::GetAddressFamily(af);
+    }
+
+    bool TcpSocket::Create()
+    {
+        auto addressFamily = SocketUtil::GetAddressFamily(_addressFamily);
         auto [wsaSocketType, wsaProtocol] = SocketUtil::GetTcpProtocol();
 
         const SocketHandle handle = ::socket(addressFamily, wsaSocketType, wsaProtocol);
@@ -33,7 +38,24 @@ namespace Piik
         {
             _handle = Npi::ToGeneralHandle(handle);
             SetBlocking(true, true);
+            return true;
         }
+
+        return false;
+    }
+
+    SocketState TcpSocket::Connect(const std::string& ip, uint16_t port, int timeOutInMs)
+    {
+        auto ipOp = IpAddress::TryParse(ip);
+        if (!ipOp)
+            return SocketState::Error;
+
+        return Connect(ipOp.value(), timeOutInMs);
+    }
+
+    SocketState TcpSocket::Connect(const IpAddress& ip, uint16_t port, int timeOutInMs)
+    {
+        return Connect(EndPoint(ip, port), timeOutInMs);
     }
 
     SocketState TcpSocket::Connect(const EndPoint& endpoint, int timeOutInMs)
@@ -87,11 +109,6 @@ namespace Piik
         ScopeGuard guard([this]()->void { SetBlocking(true); });
 
         return ConnectWithSelect(this, pSockAddr, structLen, timeOutInMs);
-    }
-
-    void TcpSocket::Disconnect()
-    {
-        Close();
     }
 
     bool TcpSocket::TryGetRemoteEndpoint(EndPoint& outEndpoint) const

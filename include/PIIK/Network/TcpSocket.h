@@ -7,14 +7,15 @@ namespace Piik
     class TcpSocket: public Socket
     {
     public:
-        TcpSocket(IpAddress::Family af = IpAddress::Family::IpV4);
+        explicit TcpSocket(IpAddress::Family af = IpAddress::Family::IpV4);
 
     public:
-        // Connect an endpoint.
-        SocketState Connect(const EndPoint& endpoint, int timeOutInMs = -1);
+        bool Create() override;
 
-        // Disconnect
-        void Disconnect();
+        // Connect an endpoint.
+        SocketState Connect(const std::string& ip, uint16_t port, int timeOutInMs = -1);
+        SocketState Connect(const IpAddress& ip, uint16_t port, int timeOutInMs = -1);
+        SocketState Connect(const EndPoint& endpoint, int timeOutInMs = -1);
 
         // Get remote ip & port
         bool TryGetRemoteEndpoint(EndPoint& outEndpoint) const;

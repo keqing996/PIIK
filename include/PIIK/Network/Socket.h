@@ -12,6 +12,8 @@ namespace Piik
         virtual ~Socket() = default;
 
     public:
+        virtual bool Create() = 0;
+
         // Return is socket in blocking mode.
         bool IsBlocking() const;
 
