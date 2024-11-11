@@ -6,6 +6,7 @@
 #include <cstdlib>
 #include <unistd.h>
 #include <cerrno>
+#include <climits>
 
 #include "PIIK/System/System.h"
 

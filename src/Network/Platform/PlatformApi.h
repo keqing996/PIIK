@@ -38,14 +38,10 @@ namespace Piik
         PIIK_FORCE_INLINE
         static SocketHandle ToNativeHandle(void* handle)
         {
-#if PLATFORM_APPLE
-            // ** cast from pointer to smaller type 'SocketHandle' (aka 'int') loses information **
-            // In MACOS, seems much restrictive for 64bit pointer to 32bit data conversion,
+            // GCC/AppleClang: ** cast from pointer to smaller type 'SocketHandle' (aka 'int') loses information **
+            // In UNIX, seems much restrictive for 64bit pointer to 32bit data conversion,
             // so we have to convert to size_t first, then static cast it.
             return static_cast<SocketHandle>(reinterpret_cast<size_t>(handle));
-#else
-            return reinterpret_cast<SocketHandle>(handle);
-#endif
         }
 
         PIIK_FORCE_INLINE

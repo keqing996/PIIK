@@ -1,3 +1,4 @@
+#include <cstring>
 #include "PIIK/Network/TcpSocket.h"
 #include "PIIK/Utility/ScopeGuard.h"
 #include "Platform/PlatformApi.h"
