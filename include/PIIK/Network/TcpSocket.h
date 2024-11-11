@@ -7,7 +7,7 @@ namespace Piik
     class TcpSocket: public Socket
     {
     public:
-        static std::optional<Socket> Create(IpAddress::Family af = IpAddress::Family::IpV4);
+        TcpSocket(IpAddress::Family af = IpAddress::Family::IpV4);
 
     public:
         // Connect an endpoint.
@@ -17,13 +17,10 @@ namespace Piik
         void Disconnect();
 
         // Get remote ip & port
-        std::optional<EndPoint> GetRemoteEndpoint() const;
+        bool TryGetRemoteEndpoint(EndPoint& outEndpoint) const;
 
         // Send
         std::pair<SocketState, size_t> Send(void* pData, size_t size);
         std::pair<SocketState, size_t> Receive(void* pBuffer, size_t size);
-
-    private:
-        TcpSocket(IpAddress::Family af, void* handle);
     };
 }

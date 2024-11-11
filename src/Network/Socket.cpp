@@ -4,16 +4,21 @@
 
 namespace Piik
 {
-    Socket::Socket(IpAddress::Family af, void* handle)
+    Socket::Socket(IpAddress::Family af)
         : _addressFamily(af)
-        , _handle(handle)
         , _isBlocking(false)
+        , _handle(0)
     {
     }
 
-    void* Socket::GetNativeHandle() const
+    int64_t Socket::GetNativeHandle() const
     {
         return _handle;
+    }
+
+    bool Socket::IsValid() const
+    {
+        return _handle != 0;
     }
 
     bool Socket::IsBlocking() const
@@ -29,6 +34,11 @@ namespace Piik
         return Npi::SetSocketBlocking(_handle, block);
     }
 
+    void Socket::Close()
+    {
+        Npi::CloseSocket(_handle);
+    }
+
     SocketState Socket::SelectRead(const Socket* pSocket, int timeoutInMs)
     {
         if (timeoutInMs <= 0)
@@ -37,7 +47,7 @@ namespace Piik
         if (pSocket == nullptr)
             return SocketState::Error;
 
-        void* handle = pSocket->GetNativeHandle();
+        int64_t handle = pSocket->GetNativeHandle();
 
         fd_set selector;
         FD_ZERO(&selector);
@@ -61,7 +71,7 @@ namespace Piik
         if (pSocket == nullptr)
             return SocketState::Error;
 
-        void* handle = pSocket->GetNativeHandle();
+        int64_t handle = pSocket->GetNativeHandle();
 
         fd_set selector;
         FD_ZERO(&selector);

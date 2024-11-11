@@ -6,7 +6,7 @@
 
 namespace Piik
 {
-    static SocketState ConnectNoSelect(void* handle, sockaddr* pSockAddr, int structLen)
+    static SocketState ConnectNoSelect(int64_t handle, sockaddr* pSockAddr, int structLen)
     {
         if (::connect(Npi::ToNativeHandle(handle), pSockAddr, structLen) == -1)
             return Npi::GetErrorState();
@@ -23,19 +23,17 @@ namespace Piik
         return Socket::SelectWrite(pSocket, timeOutInMs);
     }
 
-    std::optional<Socket> TcpSocket::Create(IpAddress::Family af)
+    TcpSocket::TcpSocket(IpAddress::Family af): Socket(af)
     {
         auto addressFamily = SocketUtil::GetAddressFamily(af);
         auto [wsaSocketType, wsaProtocol] = SocketUtil::GetTcpProtocol();
 
         const SocketHandle handle = ::socket(addressFamily, wsaSocketType, wsaProtocol);
-        if (handle == Npi::GetInvalidSocket())
-            return std::nullopt;
-
-        TcpSocket socket(af, Npi::ToGeneralHandle(handle));
-        socket.SetBlocking(true, true);
-
-        return socket;
+        if (handle != Npi::GetInvalidSocket())
+        {
+            _handle = Npi::ToGeneralHandle(handle);
+            SetBlocking(true, true);
+        }
     }
 
     SocketState TcpSocket::Connect(const EndPoint& endpoint, int timeOutInMs)
@@ -96,19 +94,22 @@ namespace Piik
         Close();
     }
 
-    std::optional<EndPoint> TcpSocket::GetRemoteEndpoint() const
+    bool TcpSocket::TryGetRemoteEndpoint(EndPoint& outEndpoint) const
     {
         if (Npi::ToNativeHandle(_handle) == Npi::GetInvalidSocket())
-            return std::nullopt;
+            return false;
 
         if (_addressFamily == IpAddress::Family::IpV4)
         {
             sockaddr_in address{};
             SockLen structLen = sizeof(sockaddr_in);
             if (::getpeername(Npi::ToNativeHandle(_handle), reinterpret_cast<sockaddr*>(&address), &structLen) != -1)
-                return EndPoint(IpAddress(ntohl(address.sin_addr.s_addr)), ntohs(address.sin_port));
+            {
+                outEndpoint = EndPoint(IpAddress(ntohl(address.sin_addr.s_addr)), ntohs(address.sin_port));
+                return true;
+            }
 
-            return std::nullopt;
+            return false;
         }
 
         if (_addressFamily == IpAddress::Family::IpV6)
@@ -116,12 +117,15 @@ namespace Piik
             sockaddr_in6 address{};
             SockLen structLen = sizeof(sockaddr_in6);
             if (::getpeername(Npi::ToNativeHandle(_handle), reinterpret_cast<sockaddr*>(&address), &structLen) != -1)
-                return EndPoint(IpAddress(address.sin6_addr.s6_addr), ntohs(address.sin6_port));
+            {
+                outEndpoint = EndPoint(IpAddress(address.sin6_addr.s6_addr), ntohs(address.sin6_port));
+                return true;
+            }
 
-            return std::nullopt;
+            return false;
         }
 
-        return std::nullopt;
+        return false;
     }
 
     std::pair<SocketState, size_t> TcpSocket::Send(void* pData, size_t size)
@@ -149,10 +153,5 @@ namespace Piik
             return { Npi::GetErrorState(), 0 };
 
         return { SocketState::Success, result };
-    }
-
-    TcpSocket::TcpSocket(IpAddress::Family af, void* handle)
-        : Socket(af, handle)
-    {
     }
 }

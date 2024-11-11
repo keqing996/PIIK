@@ -3,6 +3,7 @@
 #include <PIIK/Network/DNS.h>
 #include <PIIK/Network/Socket.h>
 #include <PIIK/Network/Network.h>
+#include <PIIK/Network/TcpSocket.h>
 
 using namespace Piik;
 
@@ -18,6 +19,9 @@ int main()
     {
         std::cout << std::format("Host address: {}", addr.ToString()) << std::endl;
     }
+
+    TcpSocket socket;
+
 
     system("pause");
 }

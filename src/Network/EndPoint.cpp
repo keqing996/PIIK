@@ -3,6 +3,20 @@
 
 namespace Piik
 {
+    EndPoint::EndPoint(const IpAddress& ip, uint16_t port)
+        : _ip(ip)
+        , _port(port)
+        , _v6ScopeId(0)
+    {
+    }
+
+    EndPoint::EndPoint(const IpAddress& ip, uint16_t port, uint32_t scopeId)
+        : _ip(ip)
+        , _port(port)
+        , _v6ScopeId(scopeId)
+    {
+    }
+
     const IpAddress& EndPoint::GetIp() const
     {
         return _ip;

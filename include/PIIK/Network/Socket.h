@@ -8,8 +8,10 @@ namespace Piik
     class Socket
     {
     public:
+        explicit Socket(IpAddress::Family af);
         virtual ~Socket() = default;
 
+    public:
         // Return is socket in blocking mode.
         bool IsBlocking() const;
 
@@ -20,7 +22,9 @@ namespace Piik
         void Close();
 
         // Return native handle by platform, SOCKET on widnows, int on posix plat.
-        void* GetNativeHandle() const;
+        int64_t GetNativeHandle() const;
+
+        bool IsValid() const;
 
         // Select
         static SocketState SelectRead(const Socket* pSocket, int timeoutInMs = -1);
@@ -29,11 +33,8 @@ namespace Piik
         SocketState SelectWrite(int timeoutInMs = -1);
 
     protected:
-        Socket(IpAddress::Family af, void* handle);
-
-    protected:
         IpAddress::Family _addressFamily;
-        void* _handle;
         bool _isBlocking;
+        int64_t _handle;
     };
 }

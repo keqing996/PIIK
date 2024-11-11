@@ -31,12 +31,12 @@ namespace Piik
         return INVALID_SOCKET;
     }
 
-    void Npi::CloseSocket(void* handle)
+    void Npi::CloseSocket(int64_t handle)
     {
         ::closesocket(ToNativeHandle(handle));
     }
 
-    bool Npi::SetSocketBlocking(void* handle, bool block)
+    bool Npi::SetSocketBlocking(int64_t handle, bool block)
     {
         u_long blocking = block ? 0 : 1;
         auto ret = ::ioctlsocket(ToNativeHandle(handle), FIONBIO, &blocking);

@@ -12,11 +12,8 @@ namespace Piik
         hints.ai_family = AF_UNSPEC; // ipv4 & ipv6
 
         addrinfo* pAddrResult = nullptr;
-        if (int ret = ::getaddrinfo(str.c_str(), nullptr, &hints, &pAddrResult) != 0)
-        {
-            auto r = WSAGetLastError();
+        if (::getaddrinfo(str.c_str(), nullptr, &hints, &pAddrResult) != 0)
             return result;
-        }
 
         if (pAddrResult == nullptr)
             return result;

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include "PIIK/PlatformDefine.h"
 #include "PIIK/Network/SocketState.h"
 
@@ -36,18 +37,15 @@ namespace Piik
 
     public:
         PIIK_FORCE_INLINE
-        static SocketHandle ToNativeHandle(void* handle)
+        static SocketHandle ToNativeHandle(int64_t handle)
         {
-            // GCC/AppleClang: ** cast from pointer to smaller type 'SocketHandle' (aka 'int') loses information **
-            // In UNIX, seems much restrictive for 64bit pointer to 32bit data conversion,
-            // so we have to convert to size_t first, then static cast it.
-            return static_cast<SocketHandle>(reinterpret_cast<size_t>(handle));
+            return static_cast<SocketHandle>(handle);
         }
 
         PIIK_FORCE_INLINE
-        static void* ToGeneralHandle(SocketHandle sock)
+        static int64_t ToGeneralHandle(SocketHandle sock)
         {
-            return reinterpret_cast<void*>(sock);
+            return static_cast<int64_t>(sock);
         }
 
     public:
@@ -55,9 +53,9 @@ namespace Piik
 
         static SocketHandle GetInvalidSocket();
 
-        static void CloseSocket(void* handle);
+        static void CloseSocket(int64_t handle);
 
-        static bool SetSocketBlocking(void* handle, bool block);
+        static bool SetSocketBlocking(int64_t handle, bool block);
 
         static SocketState GetErrorState();
     };
