@@ -13,10 +13,14 @@ file (GLOB_RECURSE PIIK_SRC ./src/*.cpp)
 add_library                 (piik STATIC ${PIIK_SRC})
 target_include_directories  (piik PUBLIC ./include/)
 
-# Test code
-option (ENABLE_INFRA_TEST OFF)
+if (WIN32)
+    target_link_libraries   (piik wsock32 ws2_32)
+endif ()
 
-if (ENABLE_INFRA_TEST)
+# Test code
+option (ENABLE_PIIK_TEST OFF)
+
+if (ENABLE_PIIK_TEST)
     add_executable          (test_socket ./test/TestSocket.cpp)
     target_link_libraries   (test_socket piik)
 

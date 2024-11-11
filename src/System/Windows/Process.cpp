@@ -1,3 +1,4 @@
+#include <cstdint>
 #include "PIIK/PlatformDefine.h"
 
 #if PLATFORM_WINDOWS

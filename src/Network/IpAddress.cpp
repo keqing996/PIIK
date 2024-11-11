@@ -1,7 +1,6 @@
 
 #include "PIIK/Network/IpAddress.h"
-#include "Posix/PosixSocket.h"
-#include "Windows/WindowsSocket.h"
+#include "Platform/PlatformApi.h"
 
 #include <cstring>
 
@@ -15,7 +14,7 @@ namespace Piik
         : _addrFamily(Family::IpV4)
         , _data()
     {
-        _data.ipV4Data = ::htonl(hostOrderIp);
+        _data.ipV4Data = htonl(hostOrderIp);
     }
 
     IpAddress::IpAddress(uint8_t byte1, uint8_t byte2, uint8_t byte3, uint8_t byte4)
@@ -26,7 +25,7 @@ namespace Piik
         hostOrderIp |= static_cast<uint32_t>(byte2) << 16;
         hostOrderIp |= static_cast<uint32_t>(byte3) << 8;
         hostOrderIp |= static_cast<uint32_t>(byte4);
-        _data.ipV4Data = ::htonl(hostOrderIp);
+        _data.ipV4Data = htonl(hostOrderIp);
     }
 
     IpAddress::IpAddress(const uint8_t* pAddr)
@@ -43,7 +42,7 @@ namespace Piik
 
     uint32_t IpAddress::GetV4Addr() const
     {
-        return ::ntohl(_data.ipV4Data);
+        return ntohl(_data.ipV4Data);
     }
 
     const uint8_t* IpAddress::GetV6Addr() const
@@ -87,7 +86,7 @@ namespace Piik
     {
         in_addr destinationV4 {};
         if (::inet_pton(AF_INET, str.c_str(), &destinationV4) == 1)
-            return IpAddress(::ntohl(destinationV4.s_addr));
+            return IpAddress(ntohl(destinationV4.s_addr));
 
         in6_addr destinationV6 {};
         if (::inet_pton(AF_INET6, str.c_str(), &destinationV6) == 1)

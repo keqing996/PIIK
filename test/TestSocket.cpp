@@ -1,9 +1,20 @@
-#include "PIIK/Network/Socket.h"
+#include <iostream>
+#include <format>
+#include <PIIK/Network/DNS.h>
+#include <PIIK/Network/Socket.h>
+#include <PIIK/Network/Network.h>
+
+using namespace Piik;
 
 int main()
 {
-    auto socket = Infra::Socket::Create().value();
-    Infra::IpAddress target = Infra::IpAddress::TryParse("10.12.16.56").value();
-    Infra::EndPoint endpoint(target, 4869);
+    Network::Initialize();
 
+    auto localAddr = DNS::GetLocalIpAddress();
+    for (auto addr: localAddr)
+    {
+        std::cout << std::format("Address: {}", addr.ToString()) << std::endl;
+    }
+
+    system("pause");
 }

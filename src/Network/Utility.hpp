@@ -1,12 +1,14 @@
 #pragma once
 
-#include "Windows/WindowsSocket.h"
-#include "Posix/PosixSocket.h"
+#include "Platform/PlatformApi.h"
 
 namespace Piik
 {
     class SocketUtil
     {
+    public:
+        SocketUtil() = delete;
+
     public:
         static int GetAddressFamily(IpAddress::Family family)
         {

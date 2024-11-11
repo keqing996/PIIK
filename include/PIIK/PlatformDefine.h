@@ -1,7 +1,7 @@
 #pragma once
 
 /* Platform define */
-#ifdef _MSC_VER
+#if defined(_MSC_VER) || defined(__MINGW64__) || defined(__MINGW32__)
 #   define PLATFORM_WINDOWS 1
 #else
 #   define PLATFORM_WINDOWS 0
@@ -44,6 +44,8 @@
 #   define PLATFORM_MAC 0
 #endif
 
+#define PLATFORM_APPLE (PLATFORM_IOS | PLATFORM_MAC)
+
 #ifdef __ANDROID__
 #   define PLATFORM_ANDROID 1
 #else
@@ -57,7 +59,11 @@
 #endif
 
 /* Posix support */
-#define PLATFORM_SUPPORT_POSIX (PLATFORM_LINUX || PLATFORM_ANDROID || PLATFORM_MAC || PLATFORM_IOS)
+#if PLATFORM_LINUX || PLATFORM_ANDROID || PLATFORM_MAC || PLATFORM_IOS
+#    define PLATFORM_SUPPORT_POSIX 1
+#else
+#    define PLATFORM_SUPPORT_POSIX 0
+#endif
 
 /* Cpp version
  * - std::format need gcc13

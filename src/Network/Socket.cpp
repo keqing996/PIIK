@@ -1,7 +1,6 @@
 
 #include "PIIK/Network/Socket.h"
-#include "Windows/WindowsSocket.h"
-#include "Posix/PosixSocket.h"
+#include "Platform/PlatformApi.h"
 
 namespace Piik
 {
@@ -27,7 +26,7 @@ namespace Piik
         if (!force && block == IsBlocking())
             return true;
 
-        return Device::SetSocketBlocking(_handle, block);
+        return Npi::SetSocketBlocking(_handle, block);
     }
 
     SocketState Socket::SelectRead(const Socket* pSocket, int timeoutInMs)
@@ -42,16 +41,16 @@ namespace Piik
 
         fd_set selector;
         FD_ZERO(&selector);
-        FD_SET(Device::ToNativeHandle(handle), &selector);
+        FD_SET(Npi::ToNativeHandle(handle), &selector);
 
         timeval time{};
         time.tv_sec  = static_cast<long>(timeoutInMs / 1000);
         time.tv_usec = timeoutInMs % 1000 * 1000;
 
-        if (::select(static_cast<int>(Device::ToNativeHandle(handle) + 1), &selector, nullptr, nullptr, &time) > 0)
+        if (::select(static_cast<int>(Npi::ToNativeHandle(handle) + 1), &selector, nullptr, nullptr, &time) > 0)
             return SocketState::Success;
 
-        return Device::GetErrorState();
+        return Npi::GetErrorState();
     }
 
     SocketState Socket::SelectWrite(const Socket* pSocket, int timeoutInMs)
@@ -66,16 +65,16 @@ namespace Piik
 
         fd_set selector;
         FD_ZERO(&selector);
-        FD_SET(Device::ToNativeHandle(handle), &selector);
+        FD_SET(Npi::ToNativeHandle(handle), &selector);
 
         timeval time{};
         time.tv_sec  = static_cast<long>(timeoutInMs / 1000);
         time.tv_usec = timeoutInMs % 1000 * 1000;
 
-        if (::select(static_cast<int>(Device::ToNativeHandle(handle) + 1), nullptr, &selector, nullptr, &time) > 0)
+        if (::select(static_cast<int>(Npi::ToNativeHandle(handle) + 1), nullptr, &selector, nullptr, &time) > 0)
             return SocketState::Success;
 
-        return Device::GetErrorState();
+        return Npi::GetErrorState();
     }
 
     SocketState Socket::SelectRead(int timeoutInMs)

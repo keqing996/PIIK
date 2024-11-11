@@ -1,55 +1,49 @@
-#include "WindowsSocket.h"
+#include <memory>
+#include "PlatformApi.h"
 
 #if PLATFORM_WINDOWS
 
-#pragma comment(lib, "Ws2_32.lib")
-
-namespace Piik::Device
+struct WinSocketGuard
 {
-    struct WinSocketGuard
+    WinSocketGuard()
     {
-        WinSocketGuard()
-        {
-            WSADATA init;
-            ::WSAStartup(MAKEWORD(2, 2), &init);
-        }
-
-        ~WinSocketGuard()
-        {
-            ::WSACleanup();
-        }
-    };
-
-    WinSocketGuard gWinSocketGuard;
-
-    SocketHandle ToNativeHandle(void* handle)
-    {
-        return reinterpret_cast<SocketHandle>(handle);
+        WSADATA init;
+        ::WSAStartup(MAKEWORD(2, 2), &init);
     }
 
-    void* ToGeneralHandle(SocketHandle sock)
+    ~WinSocketGuard()
     {
-        return reinterpret_cast<void*>(sock);
+        ::WSACleanup();
+    }
+};
+
+std::unique_ptr<WinSocketGuard> pWinSocketGuard = nullptr;
+
+namespace Piik
+{
+    void Npi::GlobalInit()
+    {
+        pWinSocketGuard = std::make_unique<WinSocketGuard>();
     }
 
-    SocketHandle GetInvalidSocket()
+    SocketHandle Npi::GetInvalidSocket()
     {
         return INVALID_SOCKET;
     }
 
-    void CloseSocket(void* handle)
+    void Npi::CloseSocket(void* handle)
     {
         ::closesocket(ToNativeHandle(handle));
     }
 
-    bool SetSocketBlocking(void* handle, bool block)
+    bool Npi::SetSocketBlocking(void* handle, bool block)
     {
         u_long blocking = block ? 0 : 1;
-        auto ret = ::ioctlsocket(ToNativeHandle(handle), static_cast<long>(FIONBIO), &blocking);
+        auto ret = ::ioctlsocket(ToNativeHandle(handle), FIONBIO, &blocking);
         return ret == 0;
     }
 
-    SocketState GetErrorState()
+    SocketState Npi::GetErrorState()
     {
         switch (::WSAGetLastError())
         {

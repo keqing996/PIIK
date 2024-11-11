@@ -1,30 +1,25 @@
-#include "PosixSocket.h"
+#include "PlatformApi.h"
 
 #if PLATFORM_SUPPORT_POSIX
 
-namespace Piik::Device
+namespace Piik
 {
-    SocketHandle ToNativeHandle(void* handle)
+    void Npi::GlobalInit()
     {
-        return reinterpret_cast<SocketHandle>(handle);
+        // do nothing
     }
 
-    void* ToGeneralHandle(SocketHandle sock)
-    {
-        return reinterpret_cast<void*>(sock);
-    }
-
-    SocketHandle GetInvalidSocket()
+    SocketHandle Npi::GetInvalidSocket()
     {
         return 0;
     }
 
-    void CloseSocket(void* handle)
+    void Npi::CloseSocket(void* handle)
     {
         ::close(ToNativeHandle(handle));
     }
 
-    bool SetSocketBlocking(void* handle, bool block)
+    bool Npi::SetSocketBlocking(void* handle, bool block)
     {
         int sock = ToNativeHandle(handle);
         const int status = ::fcntl(sock, F_GETFL);
@@ -44,7 +39,11 @@ namespace Piik::Device
         return true;
     }
 
-
+    SocketState Npi::GetErrorState()
+    {
+        // todo
+        return SocketState::Error;
+    }
 }
 
 #endif
