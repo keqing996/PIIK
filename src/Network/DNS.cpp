@@ -4,7 +4,7 @@
 
 namespace Piik
 {
-    std::vector<IpAddress> DNS::GetIpAddressByName(const std::string& str)
+    std::vector<IpAddress> DNS::GetIpAddressByHostName(const std::string& str)
     {
         std::vector<IpAddress> result;
 
@@ -12,8 +12,11 @@ namespace Piik
         hints.ai_family = AF_UNSPEC; // ipv4 & ipv6
 
         addrinfo* pAddrResult = nullptr;
-        if (::getaddrinfo(str.c_str(), nullptr, &hints, &pAddrResult) != 0)
+        if (int ret = ::getaddrinfo(str.c_str(), nullptr, &hints, &pAddrResult) != 0)
+        {
+            auto r = WSAGetLastError();
             return result;
+        }
 
         if (pAddrResult == nullptr)
             return result;
@@ -48,14 +51,6 @@ namespace Piik
 
     std::vector<IpAddress> DNS::GetLocalIpAddress()
     {
-        return GetIpAddressByName(GetHostName());
-    }
-
-    std::vector<IpAddress> DNS::GetIpAddress(const std::string& str)
-    {
-        if (auto ip = IpAddress::TryParse(str))
-            return { ip.value() };
-
-        return GetIpAddressByName(str);
+        return GetIpAddressByHostName(GetHostName());
     }
 }

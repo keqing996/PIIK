@@ -73,7 +73,7 @@ namespace Piik
 
                 char resultBuffer[INET6_ADDRSTRLEN];
 
-                ::inet_ntop(AF_INET, &address, resultBuffer, INET6_ADDRSTRLEN);
+                ::inet_ntop(AF_INET6, &address, resultBuffer, INET6_ADDRSTRLEN);
 
                 return resultBuffer;
             }

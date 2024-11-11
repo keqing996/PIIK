@@ -13,11 +13,8 @@ namespace Piik
 
     public:
         // Support both name & addr
-        static std::vector<IpAddress> GetIpAddress(const std::string& str);
+        static std::vector<IpAddress> GetIpAddressByHostName(const std::string& str);
         static std::vector<IpAddress> GetLocalIpAddress();
         static std::string GetHostName();
-
-    private:
-        static std::vector<IpAddress> GetIpAddressByName(const std::string& str);
     };
 }
