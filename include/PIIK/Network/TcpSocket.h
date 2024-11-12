@@ -33,6 +33,9 @@ namespace Piik
         SocketState Listen(const IpAddress& ip, uint16_t port);
         SocketState Listen(const EndPoint& endpoint);
 
+        // Accept
+        SocketState Accept(Socket& outSocket);
+
     private:
         bool InternalCreateSocket();
 

@@ -25,7 +25,7 @@ namespace Piik
         return std::make_pair(IPPROTO_UDP, SOCK_DGRAM);
     }
 
-    bool SocketUtil::CreateSocketAddress(const EndPoint &endpoint, sockaddr *pResult, int *structLen)
+    bool SocketUtil::CreateSocketAddress(const EndPoint& endpoint, sockaddr* pResult, SockLen* structLen)
     {
         switch (endpoint.GetAddressFamily())
         {

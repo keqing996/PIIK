@@ -224,15 +224,36 @@ namespace Piik
             return SocketState::AddressFamilyNotMatch;
 
         sockaddr sockAddr {};
-        int structLen;
+        SockLen structLen;
         if (!SocketUtil::CreateSocketAddress(endpoint, &sockAddr, &structLen))
             return SocketState::Error;
 
         if (::bind(Npi::ToNativeHandle(_handle), &sockAddr, structLen) == -1)
             return Npi::GetErrorState();
 
-        if (::listen(Npi::ToNativeHandle(_handle), 1) == -1)
+        if (::listen(Npi::ToNativeHandle(_handle), SOMAXCONN) == -1)
             return Npi::GetErrorState();
+
+        return SocketState::Success;
+    }
+
+    SocketState TcpSocket::Accept(Socket& outSocket)
+    {
+        if (_role != Role::Server)
+            return SocketState::RoleNotMatch;
+
+        if (!IsValid())
+            return SocketState::InvalidSocket;
+
+        sockaddr_in address {};
+        SockLen length = sizeof(address);
+        SocketHandle result = ::accept(Npi::ToNativeHandle(_handle), reinterpret_cast<sockaddr*>(&address), &length);
+
+        if (result == Npi::GetInvalidSocket())
+            return Npi::GetErrorState();
+
+        outSocket.Close();
+        outSocket
 
         return SocketState::Success;
     }

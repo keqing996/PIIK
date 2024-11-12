@@ -18,6 +18,6 @@ namespace Piik
 
         static std::pair<int, int> GetUdpProtocol();
 
-        static bool CreateSocketAddress(const EndPoint& endpoint, sockaddr* pResult, int* structLen);
+        static bool CreateSocketAddress(const EndPoint& endpoint, sockaddr* pResult, SockLen* structLen);
     };
 }
