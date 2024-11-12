@@ -169,47 +169,38 @@ namespace Piik
         if (endpoint.GetAddressFamily() != _addressFamily)
             return SocketState::AddressFamilyNotMatch;
 
-        union SockAddr
-        {
-            sockaddr_in v4;
-            sockaddr_in6 v6;
-        };
-
-        SockAddr address {};
-        sockaddr* pSockAddr = reinterpret_cast<sockaddr*>(&address);
+        sockaddr sockAddr {};
         int structLen;
-
-        switch (_addressFamily)
-        {
-            case IpAddress::Family::IpV4:
-                address.v4.sin_addr.s_addr = htonl(endpoint.GetIp().GetV4Addr());
-                address.v4.sin_family = AF_INET;
-                address.v4.sin_port = htons(endpoint.GetPort());
-                structLen = sizeof(sockaddr_in);
-                break;
-            case IpAddress::Family::IpV6:
-                ::memcpy(&address.v6.sin6_addr, endpoint.GetIp().GetV6Addr(), IpAddress::IPV6_ADDR_SIZE_BYTE);
-                address.v6.sin6_family = AF_INET6;
-                address.v6.sin6_scope_id = endpoint.GetV6ScopeId();
-                address.v6.sin6_port = htons(endpoint.GetPort());
-                structLen = sizeof(sockaddr_in6);
-                break;
-            default:
-                return SocketState::Error;
-        }
+        if (!SocketUtil::CreateSocketAddress(endpoint, &sockAddr, &structLen))
+            return SocketState::Error;
 
         // [NonTimeout + Blocking/NonBlocking] -> just connect
         if (timeOutInMs <= 0)
-            return ConnectNoSelect(_handle, pSockAddr, structLen);
+            return ConnectNoSelect(_handle, &sockAddr, structLen);
 
         // [Timeout + NonBlocking] -> just connect
         if (!IsBlocking())
-            return ConnectNoSelect(_handle, pSockAddr, structLen);
+            return ConnectNoSelect(_handle, &sockAddr, structLen);
 
         // [Timeout + Blocking] -> set nonblocking and select
         SetBlocking(false);
         ScopeGuard guard([this]()->void { SetBlocking(true); });
 
-        return ConnectWithSelect(this, pSockAddr, structLen, timeOutInMs);
+        return ConnectWithSelect(this, &sockAddr, structLen, timeOutInMs);
+    }
+
+    SocketState TcpSocket::Listen(const EndPoint& endpoint)
+    {
+        if (_role != Role::Server)
+            return SocketState::RoleNotMatch;
+
+        if (!IsValid())
+            return SocketState::InvalidSocket;
+
+        // Check address families match.
+        if (endpoint.GetAddressFamily() != _addressFamily)
+            return SocketState::AddressFamilyNotMatch;
+
+
     }
 }
