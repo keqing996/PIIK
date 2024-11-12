@@ -14,12 +14,12 @@ namespace Piik
         return 0;
     }
 
-    void Npi::CloseSocket(void* handle)
+    void Npi::CloseSocket(int64_t handle)
     {
         ::close(ToNativeHandle(handle));
     }
 
-    bool Npi::SetSocketBlocking(void* handle, bool block)
+    bool Npi::SetSocketBlocking(int64_t handle, bool block)
     {
         int sock = ToNativeHandle(handle);
         const int status = ::fcntl(sock, F_GETFL);
