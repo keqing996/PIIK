@@ -45,6 +45,8 @@ namespace Piik
             SetBlocking(true, true);
             return true;
         }
+
+        return false;
     }
 
     bool TcpSocket::CreateAsClient()
@@ -189,6 +191,26 @@ namespace Piik
         return ConnectWithSelect(this, &sockAddr, structLen, timeOutInMs);
     }
 
+    SocketState TcpSocket::Listen(const std::string &ip, uint16_t port)
+    {
+        if (_role != Role::Server)
+            return SocketState::RoleNotMatch;
+
+        auto ipOp = IpAddress::TryParse(ip);
+        if (!ipOp)
+            return SocketState::Error;
+
+        return Listen(ipOp.value(), port);
+    }
+
+    SocketState TcpSocket::Listen(const IpAddress &ip, uint16_t port)
+    {
+        if (_role != Role::Server)
+            return SocketState::RoleNotMatch;
+
+        return Listen(EndPoint(ip, port));
+    }
+
     SocketState TcpSocket::Listen(const EndPoint& endpoint)
     {
         if (_role != Role::Server)
@@ -201,6 +223,17 @@ namespace Piik
         if (endpoint.GetAddressFamily() != _addressFamily)
             return SocketState::AddressFamilyNotMatch;
 
+        sockaddr sockAddr {};
+        int structLen;
+        if (!SocketUtil::CreateSocketAddress(endpoint, &sockAddr, &structLen))
+            return SocketState::Error;
 
+        if (::bind(Npi::ToNativeHandle(_handle), &sockAddr, structLen) == -1)
+            return Npi::GetErrorState();
+
+        if (::listen(Npi::ToNativeHandle(_handle), 1) == -1)
+            return Npi::GetErrorState();
+
+        return SocketState::Success;
     }
 }

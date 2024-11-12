@@ -29,8 +29,8 @@ namespace Piik
         SocketState Connect(const EndPoint& endpoint, int timeOutInMs = -1);
 
         // Connect an endpoint.
-        SocketState Listen(const std::string& ip);
-        SocketState Listen(const IpAddress& ip);
+        SocketState Listen(const std::string& ip, uint16_t port);
+        SocketState Listen(const IpAddress& ip, uint16_t port);
         SocketState Listen(const EndPoint& endpoint);
 
     private:
