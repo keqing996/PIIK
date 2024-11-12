@@ -29,8 +29,11 @@ namespace Piik
     {
     }
 
-    bool TcpSocket::Create()
+    bool TcpSocket::InternalCreateSocket()
     {
+        if (!IsValid())
+            Close();
+
         auto addressFamily = SocketUtil::GetAddressFamily(_addressFamily);
         auto [wsaSocketType, wsaProtocol] = SocketUtil::GetTcpProtocol();
 
@@ -38,25 +41,24 @@ namespace Piik
         if (handle != Npi::GetInvalidSocket())
         {
             _handle = Npi::ToGeneralHandle(handle);
+
             SetBlocking(true, true);
             return true;
         }
-
-        return false;
     }
 
-    bool TcpSocket::AsClient()
+    bool TcpSocket::CreateAsClient()
     {
-        if (_role != Role::None)
+        if (!InternalCreateSocket())
             return false;
 
         _role = Role::Client;
         return true;
     }
 
-    bool TcpSocket::AsServer()
+    bool TcpSocket::CreateAsServer()
     {
-        if (_role != Role::None)
+        if (!InternalCreateSocket())
             return false;
 
         _role = Role::Server;
@@ -70,7 +72,7 @@ namespace Piik
 
     bool TcpSocket::TryGetRemoteEndpoint(EndPoint& outEndpoint) const
     {
-        if (Npi::ToNativeHandle(_handle) == Npi::GetInvalidSocket())
+        if (!IsValid())
             return false;
 
         if (_addressFamily == IpAddress::Family::IpV4)
@@ -104,6 +106,9 @@ namespace Piik
 
     std::pair<SocketState, size_t> TcpSocket::Send(void* pData, size_t size) const
     {
+        if (!IsValid())
+            return { SocketState::InvalidSocket, 0 };
+
         if (pData == nullptr || size == 0)
             return { SocketState::Error, 0 };
 
@@ -116,6 +121,9 @@ namespace Piik
 
     std::pair<SocketState, size_t> TcpSocket::Receive(void* pBuffer, size_t size) const
     {
+        if (!IsValid())
+            return { SocketState::InvalidSocket, 0 };
+
         if (pBuffer == nullptr || size == 0)
             return { SocketState::Error, 0 };
 
@@ -154,9 +162,12 @@ namespace Piik
         if (_role != Role::Client)
             return SocketState::RoleNotMatch;
 
+        if (!IsValid())
+            return SocketState::InvalidSocket;
+
         // Check address families match.
         if (endpoint.GetAddressFamily() != _addressFamily)
-            return SocketState::Error;
+            return SocketState::AddressFamilyNotMatch;
 
         union SockAddr
         {

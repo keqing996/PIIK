@@ -6,8 +6,10 @@ namespace Piik
     {
         Success,
         RoleNotMatch,
+        InvalidSocket,
         Busy,
         Disconnect,
+        AddressFamilyNotMatch,
         Error
     };
 }

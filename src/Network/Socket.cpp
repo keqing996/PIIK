@@ -7,7 +7,7 @@ namespace Piik
     Socket::Socket(IpAddress::Family af)
         : _addressFamily(af)
         , _isBlocking(false)
-        , _handle(0)
+        , _handle(Npi::ToGeneralHandle(Npi::GetInvalidSocket()))
     {
     }
 
@@ -18,7 +18,7 @@ namespace Piik
 
     bool Socket::IsValid() const
     {
-        return _handle != 0;
+        return _handle != Npi::ToGeneralHandle(Npi::GetInvalidSocket());
     }
 
     bool Socket::IsBlocking() const

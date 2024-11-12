@@ -12,10 +12,8 @@ namespace Piik
         enum class Role { None, Client, Server };
 
     public:
-        bool Create() override;
-
-        bool AsClient();
-        bool AsServer();
+        bool CreateAsClient();
+        bool CreateAsServer();
         Role GetRole() const;
 
         // Connect an endpoint.
@@ -34,6 +32,9 @@ namespace Piik
         // Send
         std::pair<SocketState, size_t> Send(void* pData, size_t size) const;
         std::pair<SocketState, size_t> Receive(void* pBuffer, size_t size) const;
+
+    private:
+        bool InternalCreateSocket();
 
     private:
         Role _role;
