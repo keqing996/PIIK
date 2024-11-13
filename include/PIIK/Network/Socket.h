@@ -9,6 +9,7 @@ namespace Piik
     {
     public:
         explicit Socket(IpAddress::Family af);
+        explicit Socket(int64_t nativeHandle);
         virtual ~Socket() = default;
 
     public:

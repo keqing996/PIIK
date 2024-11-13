@@ -5,7 +5,6 @@ namespace Piik
     enum class SocketState
     {
         Success,
-        RoleNotMatch,
         InvalidSocket,
         Busy,
         Disconnect,

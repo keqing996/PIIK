@@ -9,13 +9,7 @@ namespace Piik
     public:
         explicit TcpSocket(IpAddress::Family af = IpAddress::Family::IpV4);
 
-        enum class Role { None, Client, Server };
-
     public:
-        bool CreateAsClient();
-        bool CreateAsServer();
-        Role GetRole() const;
-
         // Get remote ip & port
         bool TryGetRemoteEndpoint(EndPoint& outEndpoint) const;
 
@@ -28,18 +22,7 @@ namespace Piik
         SocketState Connect(const IpAddress& ip, uint16_t port, int timeOutInMs = -1);
         SocketState Connect(const EndPoint& endpoint, int timeOutInMs = -1);
 
-        // Connect an endpoint.
-        SocketState Listen(const std::string& ip, uint16_t port);
-        SocketState Listen(const IpAddress& ip, uint16_t port);
-        SocketState Listen(const EndPoint& endpoint);
-
-        // Accept
-        SocketState Accept(Socket& outSocket);
-
     private:
         bool InternalCreateSocket();
-
-    private:
-        Role _role;
     };
 }

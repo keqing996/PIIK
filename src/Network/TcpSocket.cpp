@@ -25,7 +25,6 @@ namespace Piik
 
     TcpSocket::TcpSocket(IpAddress::Family af)
         : Socket(af)
-        , _role(Role::None)
     {
     }
 
@@ -47,29 +46,6 @@ namespace Piik
         }
 
         return false;
-    }
-
-    bool TcpSocket::CreateAsClient()
-    {
-        if (!InternalCreateSocket())
-            return false;
-
-        _role = Role::Client;
-        return true;
-    }
-
-    bool TcpSocket::CreateAsServer()
-    {
-        if (!InternalCreateSocket())
-            return false;
-
-        _role = Role::Server;
-        return true;
-    }
-
-    TcpSocket::Role TcpSocket::GetRole() const
-    {
-        return _role;
     }
 
     bool TcpSocket::TryGetRemoteEndpoint(EndPoint& outEndpoint) const
@@ -141,9 +117,6 @@ namespace Piik
 
     SocketState TcpSocket::Connect(const std::string& ip, uint16_t port, int timeOutInMs)
     {
-        if (_role != Role::Client)
-            return SocketState::RoleNotMatch;
-
         auto ipOp = IpAddress::TryParse(ip);
         if (!ipOp)
             return SocketState::Error;
@@ -153,17 +126,11 @@ namespace Piik
 
     SocketState TcpSocket::Connect(const IpAddress& ip, uint16_t port, int timeOutInMs)
     {
-        if (_role != Role::Client)
-            return SocketState::RoleNotMatch;
-
         return Connect(EndPoint(ip, port), timeOutInMs);
     }
 
     SocketState TcpSocket::Connect(const EndPoint& endpoint, int timeOutInMs)
     {
-        if (_role != Role::Client)
-            return SocketState::RoleNotMatch;
-
         if (!IsValid())
             return SocketState::InvalidSocket;
 
@@ -189,72 +156,5 @@ namespace Piik
         ScopeGuard guard([this]()->void { SetBlocking(true); });
 
         return ConnectWithSelect(this, &sockAddr, structLen, timeOutInMs);
-    }
-
-    SocketState TcpSocket::Listen(const std::string &ip, uint16_t port)
-    {
-        if (_role != Role::Server)
-            return SocketState::RoleNotMatch;
-
-        auto ipOp = IpAddress::TryParse(ip);
-        if (!ipOp)
-            return SocketState::Error;
-
-        return Listen(ipOp.value(), port);
-    }
-
-    SocketState TcpSocket::Listen(const IpAddress &ip, uint16_t port)
-    {
-        if (_role != Role::Server)
-            return SocketState::RoleNotMatch;
-
-        return Listen(EndPoint(ip, port));
-    }
-
-    SocketState TcpSocket::Listen(const EndPoint& endpoint)
-    {
-        if (_role != Role::Server)
-            return SocketState::RoleNotMatch;
-
-        if (!IsValid())
-            return SocketState::InvalidSocket;
-
-        // Check address families match.
-        if (endpoint.GetAddressFamily() != _addressFamily)
-            return SocketState::AddressFamilyNotMatch;
-
-        sockaddr sockAddr {};
-        SockLen structLen;
-        if (!SocketUtil::CreateSocketAddress(endpoint, &sockAddr, &structLen))
-            return SocketState::Error;
-
-        if (::bind(Npi::ToNativeHandle(_handle), &sockAddr, structLen) == -1)
-            return Npi::GetErrorState();
-
-        if (::listen(Npi::ToNativeHandle(_handle), SOMAXCONN) == -1)
-            return Npi::GetErrorState();
-
-        return SocketState::Success;
-    }
-
-    SocketState TcpSocket::Accept(Socket& outSocket)
-    {
-        if (_role != Role::Server)
-            return SocketState::RoleNotMatch;
-
-        if (!IsValid())
-            return SocketState::InvalidSocket;
-
-        sockaddr_in address {};
-        SockLen length = sizeof(address);
-        SocketHandle result = ::accept(Npi::ToNativeHandle(_handle), reinterpret_cast<sockaddr*>(&address), &length);
-
-        if (result == Npi::GetInvalidSocket())
-            return Npi::GetErrorState();
-
-        outSocket.Close();
-        outSocket
-
-        return SocketState::Success;
     }
 }
