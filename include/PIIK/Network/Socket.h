@@ -8,8 +8,6 @@ namespace Piik
     class Socket
     {
     public:
-        explicit Socket(IpAddress::Family af);
-        explicit Socket(int64_t nativeHandle);
         virtual ~Socket() = default;
 
     public:
@@ -34,8 +32,11 @@ namespace Piik
         SocketState SelectWrite(int timeoutInMs = -1);
 
     protected:
+        Socket(IpAddress::Family af, int64_t handle, bool blocking);
+
+    protected:
         IpAddress::Family _addressFamily;
-        bool _isBlocking;
         int64_t _handle;
+        bool _isBlocking;
     };
 }

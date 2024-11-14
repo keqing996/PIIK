@@ -4,13 +4,6 @@
 
 namespace Piik
 {
-    Socket::Socket(IpAddress::Family af)
-        : _addressFamily(af)
-        , _isBlocking(false)
-        , _handle(Npi::ToGeneralHandle(Npi::GetInvalidSocket()))
-    {
-    }
-
     int64_t Socket::GetNativeHandle() const
     {
         return _handle;
@@ -95,5 +88,12 @@ namespace Piik
     SocketState Socket::SelectWrite(int timeoutInMs)
     {
         return SelectWrite(this, timeoutInMs);
+    }
+
+    Socket::Socket(IpAddress::Family af, int64_t handle, bool blocking)
+        : _addressFamily(af)
+        , _handle(handle)
+        , _isBlocking(blocking)
+    {
     }
 }

@@ -23,29 +23,26 @@ namespace Piik
         return Socket::SelectWrite(pSocket, timeOutInMs);
     }
 
-    TcpSocket::TcpSocket(IpAddress::Family af)
-        : Socket(af)
+    std::optional<TcpSocket> TcpSocket::Create(IpAddress::Family af, bool blocking)
     {
-    }
-
-    bool TcpSocket::InternalCreateSocket()
-    {
-        if (!IsValid())
-            Close();
-
-        auto addressFamily = SocketUtil::GetAddressFamily(_addressFamily);
+        auto addressFamily = SocketUtil::GetAddressFamily(af);
         auto [wsaSocketType, wsaProtocol] = SocketUtil::GetTcpProtocol();
 
         const SocketHandle handle = ::socket(addressFamily, wsaSocketType, wsaProtocol);
-        if (handle != Npi::GetInvalidSocket())
-        {
-            _handle = Npi::ToGeneralHandle(handle);
+        return Create(af, Npi::ToGeneralHandle(handle), blocking);
+    }
 
-            SetBlocking(true, true);
-            return true;
-        }
+    std::optional<TcpSocket> TcpSocket::Create(IpAddress::Family af, int64_t nativeHandle, bool blocking)
+    {
+        if (nativeHandle == Npi::GetInvalidSocket())
+            return std::nullopt;
 
-        return false;
+        TcpSocket socket(af, nativeHandle, blocking);
+
+        // Set blocking
+        socket.SetBlocking(socket._isBlocking, true);
+
+        return socket;
     }
 
     bool TcpSocket::TryGetRemoteEndpoint(EndPoint& outEndpoint) const
@@ -156,5 +153,65 @@ namespace Piik
         ScopeGuard guard([this]()->void { SetBlocking(true); });
 
         return ConnectWithSelect(this, &sockAddr, structLen, timeOutInMs);
+    }
+
+    SocketState TcpSocket::Listen(const std::string &ip, uint16_t port)
+    {
+        auto ipOp = IpAddress::TryParse(ip);
+        if (!ipOp)
+            return SocketState::Error;
+
+        return Listen(ipOp.value(), port);
+    }
+
+    SocketState TcpSocket::Listen(const IpAddress &ip, uint16_t port)
+    {
+        return Listen(EndPoint(ip, port));
+    }
+
+    SocketState TcpSocket::Listen(const EndPoint& endpoint)
+    {
+        if (!IsValid())
+            return SocketState::InvalidSocket;
+
+        // Check address families match.
+        if (endpoint.GetAddressFamily() != _addressFamily)
+            return SocketState::AddressFamilyNotMatch;
+
+        sockaddr sockAddr {};
+        SockLen structLen;
+        if (!SocketUtil::CreateSocketAddress(endpoint, &sockAddr, &structLen))
+            return SocketState::Error;
+
+        if (::bind(Npi::ToNativeHandle(_handle), &sockAddr, structLen) == -1)
+            return Npi::GetErrorState();
+
+        if (::listen(Npi::ToNativeHandle(_handle), SOMAXCONN) == -1)
+            return Npi::GetErrorState();
+
+        return SocketState::Success;
+    }
+
+    std::optional<TcpSocket> TcpSocket::Accept(SocketState& socketState)
+    {
+        if (!IsValid())
+            return { SocketState::InvalidSocket, TcpSocket(_addressFamily) };
+
+        sockaddr_in address {};
+        SockLen length = sizeof(address);
+        SocketHandle result = ::accept(Npi::ToNativeHandle(_handle), reinterpret_cast<sockaddr*>(&address), &length);
+
+        if (result == Npi::GetInvalidSocket())
+            return { Npi::GetErrorState(), TcpSocket(_addressFamily) };
+
+        outSocket.Close();
+        outSocket
+
+        return SocketState::Success;
+    }
+
+    TcpSocket::TcpSocket(IpAddress::Family af, int64_t handle, bool blocking)
+        : Socket(af, handle, blocking)
+    {
     }
 }

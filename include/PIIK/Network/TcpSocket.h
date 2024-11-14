@@ -7,22 +7,31 @@ namespace Piik
     class TcpSocket: public Socket
     {
     public:
-        explicit TcpSocket(IpAddress::Family af = IpAddress::Family::IpV4);
+        static std::optional<TcpSocket> Create(IpAddress::Family af, bool blocking = true);
+        static std::optional<TcpSocket> Create(IpAddress::Family af, int64_t nativeHandle, bool blocking = true);
 
     public:
         // Get remote ip & port
         bool TryGetRemoteEndpoint(EndPoint& outEndpoint) const;
 
-        // Send & Recv
+        // [Client] Send & Recv
         std::pair<SocketState, size_t> Send(void* pData, size_t size) const;
         std::pair<SocketState, size_t> Receive(void* pBuffer, size_t size) const;
 
-        // Connect an endpoint.
+        // [Client] Connect an endpoint.
         SocketState Connect(const std::string& ip, uint16_t port, int timeOutInMs = -1);
         SocketState Connect(const IpAddress& ip, uint16_t port, int timeOutInMs = -1);
         SocketState Connect(const EndPoint& endpoint, int timeOutInMs = -1);
 
+        // [Listener] Connect an endpoint.
+        SocketState Listen(const std::string& ip, uint16_t port);
+        SocketState Listen(const IpAddress& ip, uint16_t port);
+        SocketState Listen(const EndPoint& endpoint);
+
+        // [Listener] Accept
+        std::optional<TcpSocket> Accept(SocketState& socketState);
+
     private:
-        bool InternalCreateSocket();
+        TcpSocket(IpAddress::Family af, int64_t handle, bool blocking);
     };
 }
