@@ -21,6 +21,7 @@ using SockLen = int;
 #include <sys/ioctl.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <netinet/tcp.h>
 
 using SocketHandle = int;
 using SockLen = socklen_t;
