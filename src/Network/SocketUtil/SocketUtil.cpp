@@ -1,3 +1,4 @@
+#include <cstring>
 #include "SocketUtil.h"
 
 namespace Piik

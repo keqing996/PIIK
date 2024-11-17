@@ -60,7 +60,7 @@ namespace Piik
 
     TcpSocket TcpSocket::InvalidSocket(IpAddress::Family af, bool blocking)
     {
-        return { af, Npi::GetInvalidSocket(), blocking };
+        return { af, Npi::ToGeneralHandle(Npi::GetInvalidSocket()), blocking };
     }
 
     bool TcpSocket::TryGetRemoteEndpoint(EndPoint& outEndpoint) const

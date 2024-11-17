@@ -94,28 +94,24 @@ namespace Piik
     void Logger::LogStd(Level level, const char* tag, const char* message)
     {
 #if PLATFORM_ANDROID
-        // todo.
+
+        Android::LogLevel androidLogLevel = Android::LogLevel::Info;
+        switch (level)
+        {
+            case Level::Info:       androidLogLevel = Android::LogLevel::Info; break;
+            case Level::Warning:    androidLogLevel = Android::LogLevel::Warn; break;
+            case Level::Error:      androidLogLevel = Android::LogLevel::Error; break;
+        }
+
+        Android::AndroidLogCat(androidLogLevel, tag, message);
+
 #else
         const char* levelStr = nullptr;
         switch (level)
         {
-            case Level::Info:
-            {
-                levelStr = "[I] ";
-                break;
-            }
-            case Level::Warning:
-            {
-                levelStr = "[W] ";
-                Console::SetStdOutColor(Console::Color::Yellow, Console::Color::Black);
-                break;
-            }
-            case Level::Error:
-            {
-                levelStr = "[E] ";
-                Console::SetStdOutColor(Console::Color::Red, Console::Color::Black);
-                break;
-            }
+            case Level::Info:       levelStr = "[I] "; break;
+            case Level::Warning:    levelStr = "[W] "; break;
+            case Level::Error:      levelStr = "[E] "; break;
         }
 
 #if PLATFORM_WINDOWS

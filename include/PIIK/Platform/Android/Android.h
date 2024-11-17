@@ -28,11 +28,10 @@ namespace Piik
 
     public:
         static LogFunc GetLogFunction();
+        static void AndroidLogCat(LogLevel level, const char* tag, const char* msg);
 
     private:
         static int GetAndroidLogLevel(LogLevel level);
-
-        static void AndroidLogCat(LogLevel level, const char* tag, const char* msg);
     };
 }
 
