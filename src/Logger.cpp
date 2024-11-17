@@ -1,10 +1,15 @@
 #include <mutex>
 #include "PIIK/Utility/Logger.h"
 
-static std::mutex gMutex = {};
+#include <iostream>
 
 namespace Piik
 {
+    Logger::Level       Logger::_filterLevel    = Level::Info;
+    Logger::LogCallBack Logger::_logInfoCallVec = LogStd;
+    bool                Logger::_isThreadSafe   = true;
+    std::mutex          Logger::_mutex;
+
     void Logger::SetFilterLevel(Level targetLevel)
     {
         _filterLevel = targetLevel;
@@ -15,72 +20,93 @@ namespace Piik
         return _filterLevel;
     }
 
-    void Logger::LogInfo(const std::string& message)
+    void Logger::SetTreadSafe(bool treadSafe)
     {
-        if (static_cast<int>(_filterLevel) > static_cast<int>(Logger::Level::Info))
-            return;
+        _isThreadSafe = treadSafe;
+    }
 
-        LogInfo(message.c_str());
+    bool Logger::GetTreadSafe()
+    {
+        return _isThreadSafe;
+    }
+
+    void Logger::SetLogger(const LogCallBack& pFunc)
+    {
+        _logInfoCallVec = pFunc;
     }
 
     void Logger::LogInfo(const char* message)
     {
-        if (static_cast<int>(_filterLevel) > static_cast<int>(Logger::Level::Info))
-            return;
-
-        std::lock_guard<std::mutex> guard(gMutex);
-        {
-            for (const auto p: _logInfoCallVec)
-            {
-                if (p != nullptr)
-                    p(message);
-            }
-        }
-    }
-
-    void Logger::LogWarn(const std::string& message)
-    {
-        if (static_cast<int>(_filterLevel) > static_cast<int>(Logger::Level::Warning))
-            return;
-
-        LogWarn(message.c_str());
+        Log(Level::Info, message);
     }
 
     void Logger::LogWarn(const char* message)
     {
-        if (static_cast<int>(_filterLevel) > static_cast<int>(Logger::Level::Warning))
-            return;
-
-        std::lock_guard<std::mutex> guard(gMutex);
-        {
-            for (const auto p: _logWarnCallVec)
-            {
-                if (p != nullptr)
-                    p(message);
-            }
-        }
-    }
-
-    void Logger::LogError(const std::string& message)
-    {
-        if (static_cast<int>(_filterLevel) > static_cast<int>(Logger::Level::Error))
-            return;
-
-        LogError(message.c_str());
+        Log(Level::Warning, message);
     }
 
     void Logger::LogError(const char* message)
     {
-        if (static_cast<int>(_filterLevel) > static_cast<int>(Logger::Level::Error))
+        Log(Level::Error, message);
+    }
+
+    void Logger::Log(Level level, const char* message)
+    {
+        Log(level, nullptr, message);
+    }
+
+    void Logger::LogInfo(const char* tag, const char* message)
+    {
+        Log(Level::Info, tag, message);
+    }
+
+    void Logger::LogWarn(const char* tag, const char* message)
+    {
+        Log(Level::Warning, tag, message);
+    }
+
+    void Logger::LogError(const char* tag, const char* message)
+    {
+        Log(Level::Error, tag, message);
+    }
+
+    void Logger::Log(Level level, const char* tag, const char* message)
+    {
+        if (static_cast<int>(_filterLevel) > static_cast<int>(level))
             return;
 
-        std::lock_guard<std::mutex> guard(gMutex);
+        if (_logInfoCallVec == nullptr)
+            return;
+
+        if (_isThreadSafe)
         {
-            for (const auto p: _logErrorCallVec)
-            {
-                if (p != nullptr)
-                    p(message);
-            }
+            std::lock_guard guard(_mutex);
+            _logInfoCallVec(level, tag, message);
         }
+        else
+        {
+            _logInfoCallVec(level, tag, message);
+        }
+    }
+
+    void Logger::LogStd(Level level, const char* tag, const char* message)
+    {
+        const char* levelStr = nullptr;
+        switch (level) {
+            case Level::Info:
+                levelStr = "[I] ";
+                break;
+            case Level::Warning:
+                levelStr = "[W] ";
+                break;
+            case Level::Error:
+                levelStr = "[E] ";
+                break;
+        }
+
+        if (tag != nullptr)
+            std::cout << '[' << tag << "] " << levelStr << message;
+        else
+            std::cout << levelStr << message;
     }
 }
