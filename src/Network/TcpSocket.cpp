@@ -58,6 +58,11 @@ namespace Piik
         return socket;
     }
 
+    TcpSocket TcpSocket::InvalidSocket(IpAddress::Family af, bool blocking)
+    {
+        return { af, Npi::GetInvalidSocket(), blocking };
+    }
+
     bool TcpSocket::TryGetRemoteEndpoint(EndPoint& outEndpoint) const
     {
         if (!IsValid())
@@ -149,7 +154,7 @@ namespace Piik
             return SocketState::AddressFamilyNotMatch;
 
         sockaddr sockAddr {};
-        int structLen;
+        SockLen structLen;
         if (!SocketUtil::CreateSocketAddress(endpoint, &sockAddr, &structLen))
             return SocketState::Error;
 
@@ -205,22 +210,21 @@ namespace Piik
         return SocketState::Success;
     }
 
-    std::optional<TcpSocket> TcpSocket::Accept(SocketState& socketState)
+    std::pair<SocketState, TcpSocket> TcpSocket::Accept()
     {
         if (!IsValid())
-            return { SocketState::InvalidSocket, TcpSocket(_addressFamily) };
+            return { SocketState::InvalidSocket, InvalidSocket(_addressFamily) };
 
         sockaddr_in address {};
         SockLen length = sizeof(address);
         SocketHandle result = ::accept(Npi::ToNativeHandle(_handle), reinterpret_cast<sockaddr*>(&address), &length);
 
         if (result == Npi::GetInvalidSocket())
-            return { Npi::GetErrorState(), TcpSocket(_addressFamily) };
+            return { Npi::GetErrorState(), InvalidSocket(_addressFamily) };
 
-        outSocket.Close();
-        outSocket
+        TcpSocket resultSocket(_addressFamily, Npi::ToGeneralHandle(result), true);
 
-        return SocketState::Success;
+        return { SocketState::Success, resultSocket };
     }
 
     TcpSocket::TcpSocket(IpAddress::Family af, int64_t handle, bool blocking)

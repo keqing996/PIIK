@@ -9,6 +9,7 @@ namespace Piik
     public:
         static std::optional<TcpSocket> Create(IpAddress::Family af, bool blocking = true);
         static std::optional<TcpSocket> Create(IpAddress::Family af, int64_t nativeHandle, bool blocking = true);
+        static TcpSocket InvalidSocket(IpAddress::Family af, bool blocking = true);
 
     public:
         // Get remote ip & port
@@ -29,7 +30,7 @@ namespace Piik
         SocketState Listen(const EndPoint& endpoint);
 
         // [Listener] Accept
-        std::optional<TcpSocket> Accept(SocketState& socketState);
+        std::pair<SocketState, TcpSocket> Accept();
 
     private:
         TcpSocket(IpAddress::Family af, int64_t handle, bool blocking);
