@@ -1,7 +1,9 @@
-#include <mutex>
-#include "PIIK/Utility/Logger.h"
 
 #include <iostream>
+#include "PIIK/Utility/Logger.h"
+#include "PIIK/Utility/ScopeGuard.h"
+#include "PIIK/Platform/Android/Android.h"
+#include "PIIK/Platform/Windows/Console.h"
 
 namespace Piik
 {
@@ -91,22 +93,47 @@ namespace Piik
 
     void Logger::LogStd(Level level, const char* tag, const char* message)
     {
+#if PLATFORM_ANDROID
+        // todo.
+#else
         const char* levelStr = nullptr;
-        switch (level) {
+        switch (level)
+        {
             case Level::Info:
+            {
                 levelStr = "[I] ";
                 break;
+            }
             case Level::Warning:
+            {
                 levelStr = "[W] ";
+                Console::SetStdOutColor(Console::Color::Yellow, Console::Color::Black);
                 break;
+            }
             case Level::Error:
+            {
                 levelStr = "[E] ";
+                Console::SetStdOutColor(Console::Color::Red, Console::Color::Black);
                 break;
+            }
         }
+
+#if PLATFORM_WINDOWS
+        if (level == Level::Warning)
+            Console::SetStdOutColor(Console::Color::Yellow, Console::Color::Black);
+        else if (level == Level::Error)
+            Console::SetStdOutColor(Console::Color::Red, Console::Color::Black);
+
+        ScopeGuard guard([]()->void
+        {
+            Console::SetStdOutColor(Console::Color::White, Console::Color::Black);
+        });
+#endif
 
         if (tag != nullptr)
             std::cout << '[' << tag << "] " << levelStr << message;
         else
             std::cout << levelStr << message;
+#endif
     }
 }
