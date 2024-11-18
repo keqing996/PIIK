@@ -1,8 +1,10 @@
 #include <cstring>
+#include "../PiikDefine.h"
 #include "SocketUtil/SocketUtil.h"
 #include "PIIK/Network/TcpSocket.h"
-#include "Platform/PlatformApi.h"
+#include "PIIK/Utility/Logger.h"
 #include "PIIK/Utility/ScopeGuard.h"
+#include "Platform/PlatformApi.h"
 
 namespace Piik
 {
@@ -44,15 +46,21 @@ namespace Piik
 
         // Disable Nagle optimization by default.
         int flagDisableNagle = 1;
-        ::setsockopt(Npi::ToNativeHandle(socket._handle), SOL_SOCKET, TCP_NODELAY,
-            reinterpret_cast<char*>(&flagDisableNagle), sizeof(flagDisableNagle));
+        if (::setsockopt(Npi::ToNativeHandle(socket._handle), SOL_SOCKET, TCP_NODELAY,
+            reinterpret_cast<char*>(&flagDisableNagle), sizeof(flagDisableNagle)) == -1)
+        {
+            Logger::Log(Logger::Level::Error, PIIK_LOG_TAG, "Failed to disable socket Nagle.");
+        }
 
 #if PLATFORM_MAC
         // Ignore SigPipe on macos.
         // https://stackoverflow.com/questions/108183/how-to-prevent-sigpipes-or-handle-them-properly
         int flagDisableSigPipe = 1;
-        ::setsockopt(Npi::ToNativeHandle(socket._handle), SOL_SOCKET, SO_NOSIGPIPE,
-            reinterpret_cast<char*>(&flagDisableSigPipe), sizeof(flagDisableSigPipe));
+        if (::setsockopt(Npi::ToNativeHandle(socket._handle), SOL_SOCKET, SO_NOSIGPIPE,
+            reinterpret_cast<char*>(&flagDisableSigPipe), sizeof(flagDisableSigPipe)) == -1)
+        {
+            Logger::Log(Logger::Level::Error, PIIK_LOG_TAG, "Failed to disable socket SIGPIPE.");
+        }
 #endif
 
         return socket;
