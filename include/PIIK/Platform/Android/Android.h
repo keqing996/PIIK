@@ -9,6 +9,8 @@ namespace Piik
     class Android
     {
     public:
+        Android() = delete;
+
         enum LogLevel
         {
             Default,
@@ -21,17 +23,13 @@ namespace Piik
             Silent
         };
 
-        using LogFunc = void(*)(LogLevel, const char*, const char*);
-
     public:
-        Android() = delete;
+        /* Log */
+        static void LogCat(LogLevel level, const char* tag, const char* msg);
 
-    public:
-        static LogFunc GetLogFunction();
-        static void AndroidLogCat(LogLevel level, const char* tag, const char* msg);
-
-    private:
-        static int GetAndroidLogLevel(LogLevel level);
+        /* System */
+        static int GetSystemProperty(const char* name);
+        static int GetDeviceApiLevel();
     };
 }
 

@@ -4,16 +4,12 @@
 #if PLATFORM_ANDROID
 
 #include <string>
+#include <sys/system_properties.h>
 #include <android/log.h>
 
 namespace Piik
 {
-    Android::LogFunc Android::GetLogFunction()
-    {
-        return &AndroidLogCat;
-    }
-
-    int Android::GetAndroidLogLevel(Android::LogLevel level)
+    static int GetAndroidLogLevel(Android::LogLevel level)
     {
         switch (level)
         {
@@ -38,9 +34,28 @@ namespace Piik
         return ANDROID_LOG_DEFAULT;
     }
 
-    void Android::AndroidLogCat(Android::LogLevel level, const char* tag, const char* msg)
+    void Android::LogCat(Android::LogLevel level, const char* tag, const char* msg)
     {
         __android_log_print(GetAndroidLogLevel(level), tag, "%s", msg);
+    }
+
+    int Android::GetSystemProperty(const char* name)
+    {
+        int result = 0;
+        char value[PROP_VALUE_MAX] = {};
+        if (::__system_property_get(name, value) >= 1)
+            result = std::stoi(value);
+        return result;
+    }
+
+    int Android::GetDeviceApiLevel()
+    {
+        static int apiLevel = -1;
+
+        if (apiLevel < 0)
+            apiLevel = GetSystemProperty("ro.build.version.sdk");
+
+        return apiLevel;
     }
 }
 

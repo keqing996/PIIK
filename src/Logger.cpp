@@ -103,7 +103,7 @@ namespace Piik
             case Level::Error:      androidLogLevel = Android::LogLevel::Error; break;
         }
 
-        Android::AndroidLogCat(androidLogLevel, tag, message);
+        Android::LogCat(androidLogLevel, tag, message);
 
 #else
         const char* levelStr = nullptr;
