@@ -28,7 +28,7 @@ namespace Piik
         auto addressFamily = SocketUtil::GetAddressFamily(af);
         auto [wsaSocketType, wsaProtocol] = SocketUtil::GetTcpProtocol();
 
-        const SocketHandle handle = ::socket(addressFamily, wsaSocketType, wsaProtocol);
+        const SocketHandle handle = ::socket(addressFamily, wsaProtocol, wsaSocketType);
         return Create(af, Npi::ToGeneralHandle(handle), blocking);
     }
 
