@@ -27,8 +27,7 @@ int main()
     if (ret != SocketState::Success)
     {
         std::cout << std::format("Socket connect failed with {}.", (int)ret) << std::endl;
-        system("pause");
-        return 0;
+        return -1;
     }
 
     std::string_view str = "Hello World!";
@@ -36,8 +35,7 @@ int main()
     if (sendRet != SocketState::Success)
     {
         std::cout << std::format("Socket send failed with {}.", (int)sendRet) << std::endl;
-        system("pause");
-        return 0;
+        return -1;
     }
 
     std::cout << std::format("Send: {}", str) << std::endl;
@@ -47,9 +45,10 @@ int main()
     if (recvRet != SocketState::Success)
     {
         std::cout << std::format("Socket recv failed with {}.", (int)recvRet) << std::endl;
-        system("pause");
-        return 0;
+        return -1;
     }
 
     std::cout << std::format("Receive: {}", receiveBuf.data()) << std::endl;
+
+    return 0;
 }

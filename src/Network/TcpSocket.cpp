@@ -173,7 +173,7 @@ namespace Piik
         return ConnectWithSelect(this, &sockAddr, structLen, timeOutInMs);
     }
 
-    SocketState TcpSocket::Listen(const std::string &ip, uint16_t port)
+    SocketState TcpSocket::Listen(const std::string& ip, uint16_t port)
     {
         auto ipOp = IpAddress::TryParse(ip);
         if (!ipOp)
