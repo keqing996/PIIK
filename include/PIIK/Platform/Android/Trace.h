@@ -4,7 +4,7 @@
 
 #if PLATFORM_ANDROID
 
-namespace Piik
+namespace Piik::Android
 {
     class Trace
     {

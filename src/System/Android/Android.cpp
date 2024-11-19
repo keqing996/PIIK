@@ -5,41 +5,10 @@
 
 #include <string>
 #include <sys/system_properties.h>
-#include <android/log.h>
 
-namespace Piik
+namespace Piik::Android
 {
-    static int GetAndroidLogLevel(Android::LogLevel level)
-    {
-        switch (level)
-        {
-            case Android::Default:
-                return ANDROID_LOG_DEFAULT;
-            case Android::Verbose:
-                return ANDROID_LOG_VERBOSE;
-            case Android::Debug:
-                return ANDROID_LOG_DEBUG;
-            case Android::Info:
-                return ANDROID_LOG_INFO;
-            case Android::Warn:
-                return ANDROID_LOG_WARN;
-            case Android::Error:
-                return ANDROID_LOG_ERROR;
-            case Android::Fatal:
-                return ANDROID_LOG_FATAL;
-            case Android::Silent:
-                return ANDROID_LOG_SILENT;
-        }
-
-        return ANDROID_LOG_DEFAULT;
-    }
-
-    void Android::LogCat(Android::LogLevel level, const char* tag, const char* msg)
-    {
-        __android_log_print(GetAndroidLogLevel(level), tag, "%s", msg);
-    }
-
-    int Android::GetSystemProperty(const char* name)
+    int GetSystemProperty(const char* name)
     {
         int result = 0;
         char value[PROP_VALUE_MAX] = {};
@@ -48,7 +17,7 @@ namespace Piik
         return result;
     }
 
-    int Android::GetDeviceApiLevel()
+    int GetDeviceApiLevel()
     {
         static int apiLevel = -1;
 

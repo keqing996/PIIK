@@ -6,7 +6,7 @@
 #include "PIIK/Platform/Android/Trace.h"
 #include "PIIK/System/Library.h"
 
-namespace Piik
+namespace Piik::Android
 {
     using FuncATraceBeginSection = void* (*)(const char*);
     using FuncATraceEndSection = void* (*)(void);
