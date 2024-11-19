@@ -4,7 +4,7 @@
 
 #if PLATFORM_WINDOWS
 
-namespace Piik
+namespace Piik::Windows
 {
     class Console
     {

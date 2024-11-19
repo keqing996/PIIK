@@ -9,7 +9,7 @@
 #include <vector>
 #include <shobjidl.h>
 
-namespace Piik
+namespace Piik::Windows
 {
     class Dialog
     {

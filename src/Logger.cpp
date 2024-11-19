@@ -2,7 +2,7 @@
 #include <iostream>
 #include "PIIK/Utility/Logger.h"
 #include "PIIK/Utility/ScopeGuard.h"
-#include "PIIK/Platform/Android/Android.h"
+#include "PIIK/Platform/Android/LogCat.h"
 #include "PIIK/Platform/Windows/Console.h"
 
 namespace Piik
@@ -95,15 +95,15 @@ namespace Piik
     {
 #if PLATFORM_ANDROID
 
-        Android::LogLevel androidLogLevel = Android::LogLevel::Info;
+        Android::LogCat::LogLevel androidLogLevel = Android::LogCat::LogLevel::Info;
         switch (level)
         {
-            case Level::Info:       androidLogLevel = Android::LogLevel::Info; break;
-            case Level::Warning:    androidLogLevel = Android::LogLevel::Warn; break;
-            case Level::Error:      androidLogLevel = Android::LogLevel::Error; break;
+            case Level::Info:       androidLogLevel = Android::LogCat::LogLevel::Info; break;
+            case Level::Warning:    androidLogLevel = Android::LogCat::LogLevel::Warn; break;
+            case Level::Error:      androidLogLevel = Android::LogCat::LogLevel::Error; break;
         }
 
-        Android::LogCat(androidLogLevel, tag, message);
+        Android::LogCat::Log(androidLogLevel, tag, message);
 
 #else
         const char* levelStr = nullptr;
@@ -116,13 +116,13 @@ namespace Piik
 
 #if PLATFORM_WINDOWS
         if (level == Level::Warning)
-            Console::SetStdOutColor(Console::Color::Yellow, Console::Color::Black);
+            Windows::Console::SetStdOutColor(Windows::Console::Color::Yellow, Windows::Console::Color::Black);
         else if (level == Level::Error)
-            Console::SetStdOutColor(Console::Color::Red, Console::Color::Black);
+            Windows::Console::SetStdOutColor(Windows::Console::Color::Red, Windows::Console::Color::Black);
 
         ScopeGuard guard([]()->void
         {
-            Console::SetStdOutColor(Console::Color::White, Console::Color::Black);
+            Windows::Console::SetStdOutColor(Windows::Console::Color::White, Windows::Console::Color::Black);
         });
 #endif
 

@@ -5,7 +5,7 @@
 #include "PIIK/Utility/String.h"
 #include "PIIK/Utility/ScopeGuard.h"
 
-namespace Piik
+namespace Piik::Windows
 {
     struct FileTypeFilterW
     {

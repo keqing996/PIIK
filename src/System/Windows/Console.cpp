@@ -5,7 +5,7 @@
 #include <iostream>
 #include "PIIK/Platform/Windows/WindowsDefine.h"
 
-namespace Piik
+namespace Piik::Windows
 {
     void Console::CreateConsole()
     {
