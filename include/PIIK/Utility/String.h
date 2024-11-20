@@ -91,7 +91,8 @@ namespace Piik
                 end = inputStr.find(delimiter, start);
             }
 
-            tokens.push_back(inputStr.substr(start));
+            if (start < inputStr.size())
+                tokens.push_back(inputStr.substr(start));
 
             return tokens;
         }

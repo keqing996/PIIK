@@ -11,10 +11,10 @@ int main()
 {
 #if PLATFORM_WINDOWS
     Piik::Windows::Console::SetConsoleOutputUtf8();
-#endif
 
     // Change wcout locale to zh_CN
     std::wcout.imbue(std::locale("zh_CN"));
+#endif
 
     // wstring & string
     std::cout << "Test string & wstring" << std::endl;
@@ -64,9 +64,6 @@ int main()
             std::cout << std::endl;
         }
     }
-
-
-    system("pause");
 
     return 0;
 }
