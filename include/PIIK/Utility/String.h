@@ -3,9 +3,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
-#include <ranges>
 #include <algorithm>
-#include <optional>
 
 namespace Piik
 {
@@ -21,28 +19,81 @@ namespace Piik
         /// \brief Convert utf8 char string to wide string. Should set local before calling this.
         static std::wstring StringToWideString(const std::string& str);
 
-        template <typename Encoding, typename DelimType>
-        static std::vector<std::basic_string_view<Encoding>> SplitView(const std::basic_string<Encoding>& inputStr, DelimType delim)
+        template <typename Encoding>
+        static std::vector<std::basic_string_view<Encoding>> SplitView(const std::basic_string<Encoding>& inputStr, Encoding delimiter)
         {
-            auto split = std::views::split(inputStr, delim);
-
             std::vector<std::basic_string_view<Encoding>> result;
-            for (const auto& element : split)
-                result.emplace_back(element.begin(), element.end());
+            size_t start = 0;
+            size_t end = 0;
+
+            while ((end = inputStr.find(delimiter, start)) != std::string::npos)
+            {
+                result.emplace_back(inputStr.data() + start, end - start);
+                start = end + 1;
+            }
+
+            if (start < inputStr.size())
+                result.emplace_back(inputStr.data() + start, inputStr.size() - start);
 
             return result;
         }
 
-        template <typename Encoding, typename DelimType>
-        static std::vector<std::basic_string<Encoding>> Split(const std::basic_string<Encoding>& inputStr, DelimType delim)
+        template <typename Encoding>
+        static std::vector<std::basic_string_view<Encoding>> SplitView(const std::basic_string<Encoding>& inputStr, const std::basic_string<Encoding>& delimiter)
         {
-            auto split = std::views::split(inputStr, delim);
+            std::vector<std::basic_string_view<Encoding>> result;
+            size_t start = 0;
+            size_t end = 0;
 
-            std::vector<std::basic_string<Encoding>> result;
-            for (const auto& element : split)
-                result.emplace_back(element.begin(), element.end());
+            while ((end = inputStr.find(delimiter, start)) != std::string::npos)
+            {
+                result.emplace_back(inputStr.data() + start, end - start);
+                start = end + delimiter.length();
+            }
+
+            if (start < inputStr.size())
+                result.emplace_back(inputStr.data() + start, inputStr.size() - start);
 
             return result;
+        }
+
+        template <typename Encoding>
+        static std::vector<std::basic_string<Encoding>> Split(const std::basic_string<Encoding>& inputStr, Encoding delimiter)
+        {
+            std::vector<std::string> tokens;
+            size_t start = 0;
+            size_t end = inputStr.find(delimiter);
+
+            while (end != std::string::npos)
+            {
+                tokens.push_back(inputStr.substr(start, end - start));
+                start = end + 1;
+                end = inputStr.find(delimiter, start);
+            }
+
+            if (start < inputStr.size())
+                tokens.push_back(inputStr.substr(start));
+
+            return tokens;
+        }
+
+        template <typename Encoding>
+        static std::vector<std::basic_string<Encoding>> Split(const std::basic_string<Encoding>& inputStr, const std::basic_string<Encoding>& delimiter)
+        {
+            std::vector<std::string> tokens;
+            size_t start = 0;
+            size_t end = inputStr.find(delimiter);
+
+            while (end != std::string::npos)
+            {
+                tokens.push_back(inputStr.substr(start, end - start));
+                start = end + delimiter.length();
+                end = inputStr.find(delimiter, start);
+            }
+
+            tokens.push_back(inputStr.substr(start));
+
+            return tokens;
         }
 
         template <typename Encoding>

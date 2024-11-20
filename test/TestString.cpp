@@ -1,24 +1,70 @@
-#include <iostream>
-#include "PIIK/String.hpp"
-#include "PIIK/Windows/Console.hpp"
+
+#include "iostream"
+#include "PIIK/Utility/String.h"
+#include "PIIK/PlatformDefine.h"
+
+#if PLATFORM_WINDOWS
+#include "PIIK/Platform/Windows/Console.h"
+#endif
 
 int main()
 {
-    // Do Not Change Global Locale
-    // std::locale::global(std::locale("zh_CN"));
-
-    // Change console output code page to UTF-8
-    Infra::Console::SetConsoleOutputUtf8();
+#if PLATFORM_WINDOWS
+    Piik::Windows::Console::SetConsoleOutputUtf8();
+#endif
 
     // Change wcout locale to zh_CN
     std::wcout.imbue(std::locale("zh_CN"));
 
-    std::string str = "测试";
-    std::cout << str << std::endl;
-    std::wstring wstr = Infra::String::StringToWideString(str);
-    std::wcout << wstr << std::endl;
-    std::string str2 = Infra::String::WideStringToString(wstr);
-    std::cout << str2 << std::endl;
+    // wstring & string
+    std::cout << "Test string & wstring" << std::endl;
+    {
+        std::string str = "测试";
+        std::cout << str << std::endl;
+        std::wstring wstr = Piik::String::StringToWideString(str);
+        std::wcout << wstr << std::endl;
+        std::string str2 = Piik::String::WideStringToString(wstr);
+        std::cout << str2 << std::endl;
+    }
+    std::cout << std::endl;
+
+    // split
+    std::cout << "Test split" << std::endl;
+    {
+        // char
+        {
+            std::string str = "abc,def,sdf,zxc,vfg,";
+            auto splitViews = Piik::String::SplitView(str, ',');
+            for (auto view: splitViews)
+            {
+                std::cout << '[' << view << "] ";
+            }
+            std::cout << std::endl;
+            auto split = Piik::String::Split(str, ',');
+            for (auto& s: split)
+            {
+                std::cout << '[' << s << "] ";
+            }
+            std::cout << std::endl;
+        }
+        // str
+        {
+            std::string str = "abc,,def,,sdf,,zxc,,vfg,,";
+            auto splitViews = Piik::String::SplitView(str, std::string(",,"));
+            for (auto view: splitViews)
+            {
+                std::cout << '[' << view << "] ";
+            }
+            std::cout << std::endl;
+            auto split = Piik::String::Split(str, std::string(",,"));
+            for (auto& s: split)
+            {
+                std::cout << '[' << s << "] ";
+            }
+            std::cout << std::endl;
+        }
+    }
+
 
     system("pause");
 
